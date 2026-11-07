@@ -288,3 +288,58 @@ test("the visual toolkit filters skills and supports keyboard selection", async 
     ),
   ).toBeTruthy();
 });
+
+test("career chapters follow scroll, support keyboard jumps, and link to the actual work", async ({
+  page,
+}) => {
+  await page.goto("/#experience");
+  const nav = page.getByRole("navigation", { name: "Career chapters" });
+  await expect(page.locator(".career-chapter")).toHaveCount(4);
+  await nav.getByRole("link", { name: /Pardik/ }).click();
+  await expect(nav.getByRole("link", { name: /Pardik/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await page.locator("#career-bluprint").evaluate((el) =>
+    window.scrollTo({
+      top: scrollY + el.getBoundingClientRect().top - 200,
+      behavior: "instant",
+    }),
+  );
+  await expect(nav.getByRole("link", { name: /Bluprint/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await nav.getByRole("link", { name: /Dash Team/ }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#career-dash$/);
+  await expect(nav.getByRole("link", { name: /Dash Team/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await page.setViewportSize({ width: 375, height: 812 });
+  await nav.getByRole("link", { name: /Rastaar/ }).click();
+  await expect(nav.getByRole("link", { name: /Rastaar/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await expect
+    .poll(() =>
+      page
+        .locator("#career-rastaar")
+        .evaluate((el) => el.getBoundingClientRect().top),
+    )
+    .toBeGreaterThan(140);
+  const explore = page
+    .locator("#experience")
+    .getByRole("button", { name: /Explore Dreamaan/ });
+  await explore.click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(explore).toBeFocused();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+});

@@ -29,6 +29,7 @@ npm run test:e2e
 - `src/components/InterfaceScene.tsx`: draggable Three.js sculpture with two forms, rotation buttons, offscreen pause, and a static reduced-motion fallback.
 - `src/components/AmbientBackground.tsx`: page-wide pointer-reactive particle field with an explicit pause control.
 - `src/components/ProjectPreviews.tsx`: actual Game Hub footage and a working calorie study using labeled sample data.
+- `src/components/CareerJourney.tsx`: visible career chapters, a sticky clickable timeline, scroll progress, and a Dreamaan case-study link.
 - `src/components/SkillPlayground.tsx`: filterable visual toolkit with selectable symbols, an orbital detail view, and illustrative snippets.
 - `src/components/MagneticLink.tsx`: restrained pointer feedback; disabled under reduced motion.
 - `public/media/`: optimized screenshots, decorative artwork, and walkthrough.
