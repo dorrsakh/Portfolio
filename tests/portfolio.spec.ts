@@ -137,3 +137,45 @@ test("main page and dialog have no serious accessibility violations", async ({
     .click();
   await audit();
 });
+
+test("technology marquee fills wide screens and supports motion controls", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 1878, height: 1000 });
+  await page.goto("/");
+  const strip = page.getByRole("region", { name: "Core technologies" });
+  await strip.scrollIntoViewIfNeeded();
+  await page.mouse.move(0, 0);
+  const track = strip.locator(":scope > div").first();
+  const x = () =>
+    track.evaluate((element) => element.getBoundingClientRect().x);
+  const trackBox = await track.boundingBox(),
+    stripBox = await strip.boundingBox();
+  expect(trackBox!.width).toBeGreaterThanOrEqual(stripBox!.width - 1);
+  const initial = await x();
+  await page.waitForTimeout(350);
+  expect(await x()).toBeLessThan(initial - 1);
+  await page.getByRole("button", { name: "Pause technology marquee" }).click();
+  const paused = await x();
+  await page.waitForTimeout(250);
+  expect(Math.abs((await x()) - paused)).toBeLessThan(0.5);
+  await page.getByRole("button", { name: "Resume technology marquee" }).click();
+  await strip.hover();
+  const hovered = await x();
+  await page.waitForTimeout(250);
+  expect(Math.abs((await x()) - hovered)).toBeLessThan(0.5);
+  await page.mouse.move(0, 0);
+  await strip.focus();
+  const focused = await x();
+  await page.waitForTimeout(250);
+  expect(Math.abs((await x()) - focused)).toBeLessThan(0.5);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(
+    page.getByRole("button", { name: "Pause technology marquee" }),
+  ).toBeHidden();
+  expect(await strip.locator(".technology-item:visible").count()).toBe(6);
+  const reduced = await x();
+  await page.waitForTimeout(250);
+  expect(Math.abs((await x()) - reduced)).toBeLessThan(0.5);
+});
