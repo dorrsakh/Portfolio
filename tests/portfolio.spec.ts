@@ -179,3 +179,71 @@ test("technology marquee fills wide screens and supports motion controls", async
   await page.waitForTimeout(250);
   expect(Math.abs((await x()) - reduced)).toBeLessThan(0.5);
 });
+
+test("project studies provide real filtering and calorie state updates", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Puzzle", exact: true }).click();
+  await expect(page.locator(".preview-game")).toHaveCount(1);
+  await expect(page.locator(".preview-game")).toContainText("Monument");
+  await page
+    .getByRole("textbox", { name: "Filter preview games" })
+    .fill("missing");
+  await expect(page.getByText("No matches. Try another title.")).toBeVisible();
+  await page.getByRole("textbox", { name: "Filter preview games" }).fill("");
+  await page.getByRole("button", { name: "All", exact: true }).click();
+  await expect(page.locator(".preview-game")).toHaveCount(3);
+  const total = page.getByLabel("Preview net calories");
+  await expect(total).toHaveText("1,040");
+  await page.getByRole("button", { name: "Add a snack" }).click();
+  await expect(total).toHaveText("1,190");
+  await page.getByRole("button", { name: "Take a walk" }).click();
+  await expect(total).toHaveText("1,090");
+  await page.getByRole("button", { name: "Reset calorie preview" }).click();
+  await expect(total).toHaveText("1,040");
+});
+test("the curve study has a keyboard alternative to dragging", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const path = page.locator(".lab-curve");
+  const before = await path.getAttribute("d");
+  await page.getByRole("button", { name: "Move the point" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(path).not.toHaveAttribute("d", before!);
+  await page.getByRole("button", { name: "Soft response" }).click();
+  await expect(
+    page.getByRole("button", { name: "Direct response" }),
+  ).toHaveAttribute("aria-pressed", "false");
+});
+test("ambient motion can be stopped and sculpture forms are selectable", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Orb", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Orb", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Loop", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Loop", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  const field = page.locator(".ambient-background");
+  await page.mouse.move(400, 300);
+  const image = () => field.evaluate((el: HTMLCanvasElement) => el.toDataURL());
+  const before = await image();
+  await page.waitForTimeout(300);
+  expect(await image()).not.toBe(before);
+  await page.getByRole("button", { name: "Pause ambient motion" }).click();
+  await page.waitForTimeout(150);
+  const frozen = await image();
+  await page.waitForTimeout(250);
+  expect(await image()).toBe(frozen);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(field).toBeHidden();
+  await expect(
+    page.getByRole("button", { name: "Resume ambient motion" }),
+  ).toBeHidden();
+});

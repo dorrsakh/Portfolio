@@ -6,14 +6,12 @@ import {
   Check,
   Copy,
   Download,
-  ExternalLink,
   Github,
   Linkedin,
   Menu,
-  MoveUpRight,
-  Plus,
   Pause,
   Play,
+  Plus,
   X,
 } from "lucide-react";
 import { gsap } from "gsap";
@@ -22,17 +20,23 @@ import { chapters, experiences, projects } from "./data/portfolio";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { CaseStudy } from "./components/CaseStudy";
 import { Marquee } from "./components/motion/marquee";
+import { AmbientBackground } from "./components/AmbientBackground";
+import { MagneticLink } from "./components/MagneticLink";
+import { GamePreview, CaloriePreview } from "./components/ProjectPreviews";
+import { InteractionLab } from "./components/InteractionLab";
 const InterfaceScene = lazy(() => import("./components/InterfaceScene"));
 gsap.registerPlugin(ScrollTrigger);
+
 function App() {
-  const root = useRef<HTMLDivElement>(null);
+  const root = useRef<HTMLDivElement>(null),
+    timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [menuOpen, setMenuOpen] = useState(false),
     [chapter, setChapter] = useState(0),
     [caseOpen, setCaseOpen] = useState(false),
     [copied, setCopied] = useState(false),
-    [active, setActive] = useState("home");
-  const [marqueePaused, setMarqueePaused] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    [active, setActive] = useState("home"),
+    [marqueePaused, setMarqueePaused] = useState(false),
+    [ambientPaused, setAmbientPaused] = useState(false);
   const current = chapters[chapter];
   useEffect(() => {
     const media = gsap.matchMedia();
@@ -43,29 +47,123 @@ function App() {
           { yPercent: 110 },
           {
             yPercent: 0,
-            duration: 1.1,
+            duration: 1.2,
             stagger: 0.12,
             ease: "power4.out",
             delay: 0.1,
           },
         );
         gsap.fromTo(
-          ".hero-intro,.hero-bottom",
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.8, delay: 0.5, stagger: 0.1 },
+          ".hero-intro,.hero-description,.hero-actions,.hero-bottom",
+          { opacity: 0, y: 16 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            delay: 0.6,
+            stagger: 0.1,
+            ease: "power3.out",
+          },
         );
-        gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) =>
-          gsap.fromTo(
-            el,
-            { y: 28, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              ease: "power3.out",
-              scrollTrigger: { trigger: el, start: "top 94%", once: true },
+        gsap.to(".hero-type", {
+          y: 95,
+          opacity: 0.2,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+        gsap.to(".hero-art", {
+          y: 135,
+          rotation: 7,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+        gsap.utils
+          .toArray<HTMLElement>("[data-reveal]")
+          .forEach((el) =>
+            gsap.fromTo(
+              el,
+              { y: 36, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.85,
+                ease: "power3.out",
+                scrollTrigger: { trigger: el, start: "top 91%", once: true },
+              },
+            ),
+          );
+        gsap.utils
+          .toArray<HTMLElement>("[data-depth]")
+          .forEach((el) =>
+            gsap.fromTo(
+              el,
+              { scale: 0.94, y: 35, rotateX: 4 },
+              {
+                scale: 1,
+                y: 0,
+                rotateX: 0,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: el,
+                  start: "top bottom",
+                  end: "top 24%",
+                  scrub: 1,
+                },
+              },
+            ),
+          );
+        gsap.utils
+          .toArray<HTMLElement>("[data-line]")
+          .forEach((el) =>
+            gsap.fromTo(
+              el,
+              { scaleX: 0 },
+              {
+                scaleX: 1,
+                duration: 1.2,
+                ease: "power3.out",
+                scrollTrigger: { trigger: el, start: "top 95%", once: true },
+              },
+            ),
+          );
+        gsap.fromTo(
+          ".about-statement span",
+          { color: "#85858f" },
+          {
+            color: "#f0efe9",
+            stagger: 0.13,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".about-statement",
+              start: "top 82%",
+              end: "bottom 40%",
+              scrub: 1,
             },
-          ),
+          },
+        );
+        gsap.fromTo(
+          ".contact-heading",
+          { y: 60 },
+          {
+            y: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".contact",
+              start: "top bottom",
+              end: "top 30%",
+              scrub: 1,
+            },
+          },
         );
       }, root);
       return () => ctx.revert();
@@ -80,11 +178,58 @@ function App() {
     root.current
       ?.querySelectorAll("main > section[id]")
       .forEach((el) => observer.observe(el));
+    const progress = () => {
+      const total = document.documentElement.scrollHeight - innerHeight;
+      document.documentElement.style.setProperty(
+        "--scroll-progress",
+        String(total > 0 ? scrollY / total : 0),
+      );
+    };
+    window.addEventListener("scroll", progress, { passive: true });
+    progress();
     return () => {
       media.revert();
       observer.disconnect();
+      window.removeEventListener("scroll", progress);
       if (timer.current) clearTimeout(timer.current);
     };
+  }, []);
+  useEffect(() => {
+    if (
+      !matchMedia(
+        "(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)",
+      ).matches
+    )
+      return;
+    const cleanups: Array<() => void> = [];
+    root.current?.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
+      const move = (e: PointerEvent) => {
+        if (el.contains(document.activeElement)) return;
+        const b = el.getBoundingClientRect();
+        gsap.to(el, {
+          rotationX: (-(e.clientY - b.top - b.height / 2) / b.height) * 5,
+          rotationY: ((e.clientX - b.left - b.width / 2) / b.width) * 6,
+          transformPerspective: 1100,
+          duration: 0.55,
+          ease: "power3.out",
+        });
+      };
+      const leave = () =>
+        gsap.to(el, {
+          rotationX: 0,
+          rotationY: 0,
+          duration: 0.65,
+          ease: "power3.out",
+        });
+      el.addEventListener("pointermove", move);
+      el.addEventListener("pointerleave", leave);
+      cleanups.push(() => {
+        el.removeEventListener("pointermove", move);
+        el.removeEventListener("pointerleave", leave);
+        gsap.killTweensOf(el);
+      });
+    });
+    return () => cleanups.forEach((fn) => fn());
   }, []);
   useEffect(() => {
     if (!menuOpen) return;
@@ -121,54 +266,58 @@ function App() {
   return (
     <SmoothScroll>
       <div ref={root} className="portfolio">
+        <AmbientBackground paused={ambientPaused} />
         <a className="skip-link" href="#main">
           Skip to content
         </a>
         <header className="site-header">
-          <a className="wordmark" href="#home" aria-label="Dorsa Khalili home">
-            dorsa<span>.</span>
-            <span className="wordmark-star" aria-hidden="true">
-              ✳
-            </span>
-          </a>
-          <nav
-            id="main-navigation"
-            className={menuOpen ? "main-nav is-open" : "main-nav"}
-            aria-label="Main navigation"
-          >
-            {[
-              ["work", "Work"],
-              ["about", "About"],
-              ["experience", "Experience"],
-            ].map(([id, label]) => (
-              <a
-                href={`#${id}`}
-                key={id}
-                aria-current={active === id ? "location" : undefined}
+          <div className="header-inner">
+            <a
+              className="wordmark"
+              href="#home"
+              aria-label="Dorsa Khalili home"
+            >
+              dorsa<span>.</span>
+            </a>
+            <nav
+              id="main-navigation"
+              className={menuOpen ? "main-nav is-open" : "main-nav"}
+              aria-label="Main navigation"
+            >
+              {[
+                ["work", "Work"],
+                ["about", "About"],
+                ["experience", "Experience"],
+              ].map(([id, label]) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  aria-current={active === id ? "location" : undefined}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              ))}
+              <MagneticLink
+                href="#contact"
+                className="nav-contact"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="nav-dot" />
-                {label}
-              </a>
-            ))}
-            <a
-              className="nav-contact"
-              href="#contact"
-              onClick={() => setMenuOpen(false)}
+                Let’s talk <ArrowUpRight size={15} />
+              </MagneticLink>
+            </nav>
+            <button
+              className="icon-button menu-toggle"
+              id="menu-toggle"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="main-navigation"
+              onClick={() => setMenuOpen(!menuOpen)}
             >
-              Let’s talk <ArrowUpRight size={16} />
-            </a>
-          </nav>
-          <button
-            className="icon-button menu-toggle"
-            id="menu-toggle"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            aria-controls="main-navigation"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <X /> : <Menu />}
-          </button>
+              {menuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+          <div className="reading-progress" aria-hidden="true" />
         </header>
         <main id="main">
           <section
@@ -176,114 +325,61 @@ function App() {
             id="home"
             aria-labelledby="hero-heading"
           >
-            <div className="hero-eyebrow">
-              <span className="status-dot" /> FRONTEND / SOFTWARE ENGINEER
-              <span className="hero-edition">PORTFOLIO — 2026</span>
-            </div>
             <div className="hero-composition">
               <div className="hero-type">
                 <p className="hero-intro">
-                  Hi, I’m Dorsa Khalili{" "}
-                  <span className="tiny-spark" aria-hidden="true">
-                    ✳
+                  <span className="status-dot" /> Dorsa Khalili{" "}
+                  <span className="hero-role">
+                    Frontend / Software Engineer
                   </span>
                 </p>
                 <h1 id="hero-heading">
                   <span className="hero-line">
-                    <span>Thoughtful</span>
+                    <span>Good interfaces.</span>
                   </span>
                   <span className="hero-line">
-                    <span>interfaces.</span>
-                  </span>
-                  <span className="hero-line accent-line">
                     <span>
-                      Made to <i>move.</i>
+                      A little <em>feeling.</em>
                     </span>
                   </span>
                 </h1>
-                <div className="hero-description hero-intro">
-                  <span className="small-rule" />
-                  <p>
-                    I turn complex ideas into intuitive web experiences. A
-                    little curiosity. A lot of care. Always built for people.
-                  </p>
+                <p className="hero-description">
+                  I build thoughtful web experiences.
+                  <br />
+                  Clear in purpose. Playful in the details.
+                </p>
+                <div className="hero-actions">
+                  <MagneticLink className="primary-link" href="#work">
+                    Selected work <ArrowDownRight size={19} />
+                  </MagneticLink>
+                  <a
+                    className="quiet-link"
+                    href="/Dorsa-Khalili-CV.pdf"
+                    download
+                  >
+                    Résumé <Download size={14} />
+                  </a>
                 </div>
-                <a className="pill-button hero-intro" href="#work">
-                  Explore my work <ArrowDownRight size={19} />
-                </a>
               </div>
-              <div
-                className="hero-art"
-                aria-label="Interactive arrangement of interface panels"
-              >
-                <div className="art-grid" aria-hidden="true" />
-                <div className="art-orbit orbit-one" aria-hidden="true" />
-                <div className="art-orbit orbit-two" aria-hidden="true" />
+              <div className="hero-art">
                 <Suspense
                   fallback={
-                    <div className="scene-fallback" aria-hidden="true">
-                      <span />
-                      <span />
-                      <span />
-                    </div>
+                    <div className="sculpture-fallback" aria-hidden="true" />
                   }
                 >
-                  <InterfaceScene />
+                  <InterfaceScene paused={ambientPaused} />
                 </Suspense>
-                <a className="floating-panel panel-studio" href="#work">
-                  <span className="panel-topline">
-                    <span className="panel-led" /> CREATIVE STUDIO{" "}
-                    <ArrowUpRight size={12} />
-                  </span>
-                  <div className="mini-studio-image" />
-                  <span className="panel-footer">
-                    An idea. A frame. A possibility.<span>↗</span>
-                  </span>
-                </a>
-                <a className="floating-panel panel-code" href="#about">
-                  <span className="code-dots">
-                    <i />
-                    <i />
-                    <i />
-                    <span>the approach.tsx</span>
-                  </span>
-                  <code>
-                    <span className="code-purple">const</span> experience ={" "}
-                    {"{"}
-                    <br />
-                    &nbsp; thoughtful: <span className="code-coral">true</span>,
-                    <br />
-                    &nbsp; builtFor:{" "}
-                    <span className="code-green">'people'</span>,<br />
-                    &nbsp; details: <span className="code-green">'matter'</span>
-                    <br />
-                    {"}"};
-                  </code>
-                </a>
-                <div className="art-tag tag-react">
-                  <span aria-hidden="true">⚛</span> React
-                </div>
-                <div className="art-tag tag-typescript">
-                  <b>TS</b> TypeScript
-                </div>
-                <div className="art-coordinate" aria-hidden="true">
-                  FIG. 01 — IDEAS INTO INTERFACES
-                </div>
-                <div className="art-hint">
-                  <Plus size={12} /> Move your cursor. Follow your curiosity.
-                </div>
               </div>
             </div>
             <div className="hero-bottom">
-              <span>BASED IN TEHRAN, IRAN ↗</span>
-              <span className="currently">
-                Currently building creative tools at{" "}
-                <a href="#work">
-                  Rastaar <ArrowUpRight size={12} />
-                </a>
+              <span>
+                Based in Tehran. Building at <a href="#work">Rastaar ↗</a>
               </span>
-              <a className="scroll-link" href="#work">
-                SCROLL TO EXPLORE <ArrowDown size={14} />
+              <span className="hero-play-hint">
+                Move your cursor. Scroll a little. Explore.
+              </span>
+              <a href="#work" aria-label="Scroll to selected work">
+                <ArrowDown size={18} />
               </a>
             </div>
           </section>
@@ -304,14 +400,11 @@ function App() {
               ].map((item) => (
                 <span className="technology-item" key={item}>
                   {item}
-                  <span className="strip-spark" aria-hidden="true">
-                    ✳
-                  </span>
+                  <span className="strip-dot" aria-hidden="true" />
                 </span>
               ))}
             </Marquee>
             <button
-              type="button"
               className="icon-button marquee-control"
               aria-label={
                 marqueePaused
@@ -321,11 +414,7 @@ function App() {
               aria-pressed={marqueePaused}
               onClick={() => setMarqueePaused(!marqueePaused)}
             >
-              {marqueePaused ? (
-                <Play size={14} aria-hidden="true" />
-              ) : (
-                <Pause size={14} aria-hidden="true" />
-              )}
+              {marqueePaused ? <Play size={13} /> : <Pause size={13} />}
             </button>
           </div>
           <section
@@ -333,47 +422,39 @@ function App() {
             id="work"
             aria-labelledby="work-heading"
           >
-            <div className="section-topline" data-reveal>
-              <span className="eyebrow">01 / SELECTED WORK</span>
-              <span className="quiet-label">
-                A FEW THINGS I’VE PUT MY HEART INTO
-              </span>
-            </div>
             <div className="section-heading" data-reveal>
-              <h2 id="work-heading">
-                Good ideas.
-                <br />
-                <span className="serif-word">Real interfaces.</span>
-              </h2>
+              <div>
+                <span className="section-index">01 / Work</span>
+                <h2 id="work-heading">
+                  A few things
+                  <br />
+                  I’ve helped bring to life.
+                </h2>
+              </div>
               <p>
-                From AI-powered creative workflows to everyday tools. A closer
-                look at what I build, and how I think.
+                Real products.
+                <br />
+                Thoughtful interactions.
               </p>
             </div>
-            <article className="featured-project" data-reveal>
-              <div className="project-stage">
-                <div className="stage-top">
-                  <span className="project-brand">
-                    <span aria-hidden="true">✳</span> Dreamaan
-                  </span>
-                  <span className="wip-badge">
-                    <span /> REDESIGN IN PROGRESS
-                  </span>
+            <article className="featured-project">
+              <div className="project-heading" data-reveal>
+                <div>
+                  <h3>
+                    Dreamaan<span className="project-period">.</span>
+                  </h3>
+                  <p>AI-powered creative tools · Rastaar</p>
                 </div>
+                <span className="wip-badge">
+                  <span /> Redesign in progress
+                </span>
+              </div>
+              <div className="project-media-wrap" data-depth>
                 <button
                   className="screenshot-frame"
                   onClick={() => setCaseOpen(true)}
-                  aria-label={`Explore Dreamaan ${current.label} case study`}
+                  aria-label={`Explore Dreamaan ${current.label} preview`}
                 >
-                  <span className="browser-chrome">
-                    <span className="window-dots">
-                      <i />
-                      <i />
-                      <i />
-                    </span>
-                    <span>dreamaan / {current.id}</span>
-                    <ExternalLink size={11} />
-                  </span>
                   <span className="project-screen">
                     <img
                       key={current.image}
@@ -384,42 +465,10 @@ function App() {
                       height="960"
                     />
                     <span className="screen-open">
-                      Explore the details <ArrowUpRight size={17} />
+                      A closer look <ArrowUpRight size={18} />
                     </span>
                   </span>
                 </button>
-                <div className="stage-bottom">
-                  <span>AI-POWERED CINEMATIC PRODUCTION</span>
-                  <span className="stage-count">
-                    0{chapter + 1} <span>/ 04</span>
-                  </span>
-                </div>
-              </div>
-              <div className="project-detail">
-                <div className="project-intro">
-                  <div>
-                    <span className="eyebrow coral">
-                      FEATURED PROJECT / RASTAAR
-                    </span>
-                    <h3>
-                      Making room
-                      <br />
-                      for <i>creativity.</i>
-                    </h3>
-                  </div>
-                  <button
-                    className="round-arrow"
-                    onClick={() => setCaseOpen(true)}
-                    aria-label="Open Dreamaan case study"
-                  >
-                    <ArrowUpRight />
-                  </button>
-                </div>
-                <p className="project-summary">
-                  A creative platform for AI-driven animation and cinematic
-                  production. I help make complex workflows feel clear,
-                  connected, and intuitive.
-                </p>
                 <div
                   className="chapter-tabs"
                   role="tablist"
@@ -428,8 +477,8 @@ function App() {
                   {chapters.map((item, index) => (
                     <button
                       key={item.id}
-                      role="tab"
                       id={`chapter-tab-${index}`}
+                      role="tab"
                       aria-controls="chapter-panel"
                       aria-selected={chapter === index}
                       tabIndex={chapter === index ? 0 : -1}
@@ -440,6 +489,8 @@ function App() {
                     </button>
                   ))}
                 </div>
+              </div>
+              <div className="project-caption" data-reveal>
                 <div
                   className="chapter-panel"
                   id="chapter-panel"
@@ -447,134 +498,42 @@ function App() {
                   aria-labelledby={`chapter-tab-${chapter}`}
                   tabIndex={0}
                 >
-                  <span className="chapter-label">
-                    0{chapter + 1} — {current.label}
-                  </span>
                   <h4>{current.title}</h4>
                   <p>{current.description}</p>
                 </div>
-                <div className="tech-tags">
-                  <span>React</span>
-                  <span>TypeScript</span>
-                  <span>Next.js</span>
-                  <span>UI/UX</span>
-                </div>
                 <button
-                  className="text-link case-link"
+                  className="text-link"
+                  aria-label="Open Dreamaan case study"
                   onClick={() => setCaseOpen(true)}
                 >
-                  Explore the case study <ArrowUpRight size={17} />
+                  Explore project <ArrowUpRight size={17} />
                 </button>
               </div>
+              <div className="section-rule" data-line />
             </article>
             <div className="other-work">
               {projects.map((project, index) => (
                 <article
+                  className="small-project"
                   key={project.name}
-                  className={`small-project small-project-${index}`}
                   data-reveal
                 >
-                  <a
-                    className="small-project-art"
-                    href={project.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`View ${project.name} on GitHub`}
-                  >
-                    <span className="art-project-index">
-                      0{index + 2} / PERSONAL PROJECT
-                    </span>
-                    {index === 0 ? (
-                      <div className="game-visual">
-                        <div className="game-sidebar">
-                          <span className="game-logo">
-                            g<span>.</span>
-                          </span>
-                          <span>Discover</span>
-                          <span className="game-active">All games</span>
-                          <span>Adventure</span>
-                          <span>Role-playing</span>
-                        </div>
-                        <div className="game-content">
-                          <div className="game-search">
-                            Find your next adventure <span>⌕</span>
-                          </div>
-                          <strong>
-                            Never stop exploring<span>.</span>
-                          </strong>
-                          <div className="game-grid">
-                            <div>
-                              <span>EXPLORE</span>
-                            </div>
-                            <div>
-                              <span>DISCOVER</span>
-                            </div>
-                            <div>
-                              <span>PLAY</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="calorie-visual">
-                        <div className="calorie-title">
-                          <span>Daily balance</span>
-                          <span className="calorie-chip">
-                            A little, every day ↗
-                          </span>
-                        </div>
-                        <div className="calorie-body">
-                          <div className="calorie-ring">
-                            <div>
-                              <span>1,240</span>
-                              <small>of 2,000 kcal</small>
-                            </div>
-                          </div>
-                          <div className="calorie-stats">
-                            <span>
-                              MEALS{" "}
-                              <b>
-                                1,540 <small>kcal</small>
-                              </b>
-                            </span>
-                            <span>
-                              ACTIVITY{" "}
-                              <b>
-                                300 <small>kcal</small>
-                              </b>
-                            </span>
-                          </div>
-                        </div>
-                        <div className="calorie-row">
-                          <span className="meal-icon">+</span>
-                          <span>
-                            Lunch
-                            <br />
-                            <small>A moment to refuel</small>
-                          </span>
-                          <b>540 kcal</b>
-                        </div>
-                      </div>
-                    )}
-                    <span className="visual-caption">
-                      INTERFACE STUDY · BASED ON PROJECT FEATURES
-                    </span>
-                    <span className="project-hover-arrow">
-                      <ArrowUpRight />
-                    </span>
-                  </a>
+                  {index === 0 ? <GamePreview /> : <CaloriePreview />}
                   <div className="small-project-info">
-                    <span className="eyebrow muted">{project.category}</span>
-                    <h3>
-                      <a href={project.url} target="_blank" rel="noreferrer">
-                        {project.name}
-                        <ArrowUpRight size={22} />
-                      </a>
-                    </h3>
+                    <div>
+                      <h3>
+                        <a href={project.url} target="_blank" rel="noreferrer">
+                          {project.name} <ArrowUpRight size={19} />
+                        </a>
+                      </h3>
+                      <span>
+                        {project.category.split(" / ")[0].toLowerCase()}
+                      </span>
+                    </div>
                     <p>{project.description}</p>
                     <div className="tech-tags">
-                      {project.stack.map((item) => (
-                        <span key={item}>{item}</span>
+                      {project.stack.map((tech) => (
+                        <span key={tech}>{tech}</span>
                       ))}
                     </div>
                   </div>
@@ -587,8 +546,7 @@ function App() {
               target="_blank"
               rel="noreferrer"
             >
-              <Github size={16} /> More experiments on GitHub{" "}
-              <ArrowUpRight size={16} />
+              More experiments on GitHub <ArrowUpRight size={16} />
             </a>
           </section>
           <section
@@ -596,102 +554,65 @@ function App() {
             id="about"
             aria-labelledby="about-heading"
           >
-            <div className="section-topline" data-reveal>
-              <span className="eyebrow">02 / THE PERSON BEHIND THE PIXELS</span>
-              <span className="quiet-label">
-                CURIOUS BY NATURE. THOUGHTFUL BY DESIGN.
-              </span>
-            </div>
-            <div className="about-layout">
-              <div className="about-heading" data-reveal>
-                <span className="large-spark" aria-hidden="true">
-                  ✳
-                </span>
+            <div className="section-rule" data-line />
+            <div className="about-grid">
+              <div data-reveal>
+                <span className="section-index">02 / A little about me</span>
                 <h2 id="about-heading">
-                  Engineer’s mind.
+                  An engineer’s mind.
                   <br />
-                  <span className="serif-word">Creative heart.</span>
+                  An eye for the details.
                 </h2>
-                <div className="about-note">
-                  <span>
-                    Good software starts
-                    <br />
-                    with understanding people.
-                  </span>
-                  <ArrowUpRight size={30} strokeWidth={1} />
-                </div>
+                <p className="about-statement">
+                  {"Curiosity builds the first version. Care makes it worth using."
+                    .split(" ")
+                    .map((word, index) => (
+                      <span key={index}>{word} </span>
+                    ))}
+                </p>
               </div>
               <div className="about-copy" data-reveal>
-                <p className="about-lead">
-                  I’m Dorsa, a frontend and software engineer who cares as much
-                  about how a product feels as how it works.
+                <p>
+                  I’m Dorsa, a frontend and software engineer working where
+                  design meets development.
                 </p>
                 <p>
-                  I build with React, Next.js, and TypeScript, bringing together
-                  responsive interfaces, API integrations, and the small details
-                  that make a workflow feel effortless.
+                  I build with React, Next.js, and TypeScript. At Rastaar, I
+                  help turn complex creative workflows into clear, responsive
+                  interfaces.
                 </p>
                 <p>
-                  At Rastaar, I work on Dreamaan, an AI-powered creative
-                  platform. My work spans feature development, UI/UX
-                  improvements, debugging, and automated testing.
+                  My process includes API integration, automated testing, and
+                  AI-assisted development — with a human eye on the result.
                 </p>
-                <p>
-                  I use AI development tools as part of my process, then review,
-                  test, and refine the code. Curiosity helps me move forward.
-                  Care helps me build something worth using.
-                </p>
-                <div className="about-facts">
-                  <div>
-                    <span>BASED IN</span>
-                    <strong>Tehran, Iran</strong>
-                  </div>
-                  <div>
-                    <span>LANGUAGES</span>
-                    <strong>Persian · English C1</strong>
-                  </div>
-                  <div>
-                    <span>BACKGROUND</span>
-                    <strong>Computer Engineering</strong>
-                  </div>
-                  <div>
-                    <span>ALSO PART OF MY STORY</span>
-                    <strong>Python teaching & UI/UX</strong>
-                  </div>
-                </div>
                 <a className="text-link" href="/Dorsa-Khalili-CV.pdf" download>
-                  Download my résumé <Download size={16} />
+                  The longer version <Download size={15} />
                 </a>
               </div>
             </div>
-            <div className="toolkit" data-reveal>
-              <div>
-                <span className="eyebrow">MY EVERYDAY TOOLKIT</span>
-                <p>
-                  The tools change.
-                  <br />
-                  The care stays.
-                </p>
-              </div>
-              <div className="toolkit-items">
-                {[
-                  "React",
-                  "Next.js",
-                  "TypeScript",
-                  "Tailwind CSS",
-                  "Zustand",
-                  "React Query",
-                  "Jest",
-                  "Playwright",
-                  "Figma",
-                  "Git",
-                  "Cursor",
-                  "Claude",
-                  "Copilot",
-                  "Codex",
-                ].map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
+            <div className="craft-grid">
+              <InteractionLab />
+              <div className="toolkit" data-reveal>
+                <span className="section-index">A few tools I work with</span>
+                <div className="toolkit-items">
+                  {[
+                    "React",
+                    "TypeScript",
+                    "Next.js",
+                    "Tailwind CSS",
+                    "Zustand",
+                    "React Query",
+                    "Jest",
+                    "Playwright",
+                    "Figma",
+                    "Git",
+                    "Cursor",
+                    "Codex",
+                  ].map((tool) => (
+                    <span key={tool}>{tool}</span>
+                  ))}
+                </div>
+                <p>The tools change. The care stays.</p>
               </div>
             </div>
           </section>
@@ -700,32 +621,20 @@ function App() {
             id="experience"
             aria-labelledby="experience-heading"
           >
-            <div className="section-topline" data-reveal>
-              <span className="eyebrow">03 / ALONG THE WAY</span>
-              <span className="quiet-label">
-                ALWAYS LEARNING. ALWAYS BUILDING.
-              </span>
-            </div>
-            <div className="experience-layout">
+            <div className="section-rule" data-line />
+            <div className="experience-grid">
               <div data-reveal>
+                <span className="section-index">03 / Along the way</span>
                 <h2 id="experience-heading">
-                  A little more
+                  Always learning.
                   <br />
-                  <span className="serif-word">experience.</span>
+                  Always building.
                 </h2>
-                <p className="experience-aside">
-                  Different teams, different challenges.
+                <p className="experience-note">
+                  Different teams. Different challenges.
                   <br />
                   The same attention to the details.
                 </p>
-                <a
-                  className="text-link"
-                  href="/Dorsa-Khalili-CV.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  The full story <ArrowUpRight size={16} />
-                </a>
               </div>
               <div className="experience-list">
                 {experiences.map((item, index) => (
@@ -736,17 +645,12 @@ function App() {
                     data-reveal
                   >
                     <summary>
-                      <span className="experience-date">{item.date}</span>
                       <span className="experience-title">
-                        <strong>
-                          {item.company}
-                          {index === 0 && (
-                            <span className="current-label">CURRENT</span>
-                          )}
-                        </strong>
+                        <strong>{item.company}</strong>
                         <span>{item.role}</span>
                       </span>
-                      <Plus size={18} className="experience-plus" />
+                      <span className="experience-date">{item.date}</span>
+                      <Plus size={17} className="experience-plus" />
                     </summary>
                     <div className="experience-description">
                       <p>{item.description}</p>
@@ -766,27 +670,16 @@ function App() {
             id="contact"
             aria-labelledby="contact-heading"
           >
-            <div className="contact-top" data-reveal>
-              <span className="eyebrow">04 / LET’S MAKE SOMETHING GOOD</span>
-              <span className="contact-spark" aria-hidden="true">
-                ✳
-              </span>
-            </div>
-            <div className="contact-main" data-reveal>
+            <div className="section-rule" data-line />
+            <div className="contact-heading">
+              <span className="section-index">04 / Something in mind?</span>
               <h2 id="contact-heading">
-                Have something
+                Let’s make
                 <br />
-                in <span className="serif-word">mind?</span>
+                something <em>good.</em>
               </h2>
-              <a
-                className="contact-arrow"
-                href="mailto:dorrsakhalili@gmail.com"
-                aria-label="Email Dorsa Khalili"
-              >
-                <MoveUpRight strokeWidth={1} />
-              </a>
             </div>
-            <div className="contact-bottom" data-reveal>
+            <div className="contact-bottom">
               <div>
                 <p>
                   A thoughtful product. A new collaboration.
@@ -794,15 +687,15 @@ function App() {
                   Or just a good conversation.
                 </p>
                 <div className="email-line">
-                  <a href="mailto:dorrsakhalili@gmail.com">
-                    dorrsakhalili@gmail.com
-                  </a>
+                  <MagneticLink href="mailto:dorrsakhalili@gmail.com">
+                    dorrsakhalili@gmail.com <ArrowUpRight size={20} />
+                  </MagneticLink>
                   <button
                     className="icon-button"
-                    onClick={copyEmail}
                     aria-label={copied ? "Email copied" : "Copy email address"}
+                    onClick={copyEmail}
                   >
-                    {copied ? <Check size={17} /> : <Copy size={17} />}
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                   <span className="sr-only" role="status">
                     {copied ? "Email address copied" : ""}
@@ -815,37 +708,40 @@ function App() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Github size={16} />
-                  GitHub <ArrowUpRight size={16} />
+                  <Github size={15} /> GitHub <ArrowUpRight size={14} />
                 </a>
                 <a
                   href="https://linkedin.com/in/dorsa-khalili"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Linkedin size={16} />
-                  LinkedIn <ArrowUpRight size={16} />
+                  <Linkedin size={15} /> LinkedIn <ArrowUpRight size={14} />
                 </a>
                 <a href="/Dorsa-Khalili-CV.pdf" download>
-                  <Download size={16} />
-                  Résumé <ArrowDown size={16} />
+                  <Download size={15} /> Résumé
                 </a>
               </div>
             </div>
           </section>
         </main>
         <footer className="site-footer section-shell">
-          <a className="wordmark" href="#home">
-            dorsa<span>.</span>
-          </a>
-          <span>
-            BUILT WITH CURIOSITY & CARE <span aria-hidden="true">✳</span>{" "}
-            {new Date().getFullYear()}
-          </span>
+          <span>Dorsa Khalili © {new Date().getFullYear()}</span>
+          <span>Built with curiosity & care.</span>
           <a href="#home">
-            BACK TO TOP <ArrowUpRight size={13} />
+            Back to top <ArrowUpRight size={14} />
           </a>
         </footer>
+        <button
+          className="ambient-control"
+          aria-label={
+            ambientPaused ? "Resume ambient motion" : "Pause ambient motion"
+          }
+          aria-pressed={ambientPaused}
+          onClick={() => setAmbientPaused(!ambientPaused)}
+        >
+          {ambientPaused ? <Play size={12} /> : <Pause size={12} />}
+          <span>Motion {ambientPaused ? "off" : "on"}</span>
+        </button>
         {caseOpen && (
           <CaseStudy
             onClose={() => setCaseOpen(false)}
