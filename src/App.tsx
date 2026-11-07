@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
-  ArrowDown,
   ArrowDownRight,
   ArrowUpRight,
   Check,
@@ -22,6 +21,7 @@ import { Marquee } from "./components/motion/marquee";
 import { AmbientBackground } from "./components/AmbientBackground";
 import { MagneticLink } from "./components/MagneticLink";
 import { GamePreview, CaloriePreview } from "./components/ProjectPreviews";
+import { BackToTop } from "./components/BackToTop";
 import { CareerJourney } from "./components/CareerJourney";
 import { SkillPlayground } from "./components/SkillPlayground";
 const InterfaceScene = lazy(() => import("./components/InterfaceScene"));
@@ -35,8 +35,8 @@ function App() {
     [caseOpen, setCaseOpen] = useState(false),
     [copied, setCopied] = useState(false),
     [active, setActive] = useState("home"),
-    [marqueePaused, setMarqueePaused] = useState(false),
-    [ambientPaused, setAmbientPaused] = useState(false);
+    [marqueePaused, setMarqueePaused] = useState(false);
+
   const current = chapters[chapter];
   useEffect(() => {
     const media = gsap.matchMedia();
@@ -54,7 +54,7 @@ function App() {
           },
         );
         gsap.fromTo(
-          ".hero-intro,.hero-description,.hero-actions,.hero-bottom",
+          ".hero-intro,.hero-description,.hero-actions",
           { opacity: 0, y: 16 },
           {
             opacity: 1,
@@ -260,7 +260,7 @@ function App() {
   return (
     <SmoothScroll>
       <div ref={root} className="portfolio">
-        <AmbientBackground paused={ambientPaused} />
+        <AmbientBackground paused={false} />
         <a className="skip-link" href="#main">
           Skip to content
         </a>
@@ -317,6 +317,7 @@ function App() {
           <section
             className="hero section-shell"
             id="home"
+            tabIndex={-1}
             aria-labelledby="hero-heading"
           >
             <div className="hero-composition">
@@ -361,20 +362,9 @@ function App() {
                     <div className="sculpture-fallback" aria-hidden="true" />
                   }
                 >
-                  <InterfaceScene paused={ambientPaused} />
+                  <InterfaceScene />
                 </Suspense>
               </div>
-            </div>
-            <div className="hero-bottom">
-              <span>
-                Based in Tehran. Building at <a href="#work">Rastaar ↗</a>
-              </span>
-              <span className="hero-play-hint">
-                Move your cursor. Scroll a little. Explore.
-              </span>
-              <a href="#work" aria-label="Scroll to selected work">
-                <ArrowDown size={18} />
-              </a>
             </div>
           </section>
           <div className="capability-strip" data-paused={marqueePaused}>
@@ -653,17 +643,7 @@ function App() {
             Back to top <ArrowUpRight size={14} />
           </a>
         </footer>
-        <button
-          className="ambient-control"
-          aria-label={
-            ambientPaused ? "Resume ambient motion" : "Pause ambient motion"
-          }
-          aria-pressed={ambientPaused}
-          onClick={() => setAmbientPaused(!ambientPaused)}
-        >
-          {ambientPaused ? <Play size={12} /> : <Pause size={12} />}
-          <span>Motion {ambientPaused ? "off" : "on"}</span>
-        </button>
+        <BackToTop />
         {caseOpen && (
           <CaseStudy
             onClose={() => setCaseOpen(false)}

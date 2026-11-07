@@ -211,7 +211,7 @@ test("project footage plays and the calorie study updates", async ({
   await page.getByRole("button", { name: "Reset calorie preview" }).click();
   await expect(total).toHaveText("1,040");
 });
-test("ambient motion can be stopped and sculpture forms are selectable", async ({
+test("ambient motion respects reduced motion and sculpture forms are selectable", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -230,16 +230,8 @@ test("ambient motion can be stopped and sculpture forms are selectable", async (
   const before = await image();
   await page.waitForTimeout(300);
   expect(await image()).not.toBe(before);
-  await page.getByRole("button", { name: "Pause ambient motion" }).click();
-  await page.waitForTimeout(150);
-  const frozen = await image();
-  await page.waitForTimeout(250);
-  expect(await image()).toBe(frozen);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(field).toBeHidden();
-  await expect(
-    page.getByRole("button", { name: "Resume ambient motion" }),
-  ).toBeHidden();
 });
 
 test("the visual toolkit filters skills and supports keyboard selection", async ({
@@ -342,4 +334,39 @@ test("career chapters follow scroll, support keyboard jumps, and link to the act
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBeTruthy();
+});
+
+test("project cards align and back-to-top is available while scrolling", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const top = page.getByRole("button", { name: "Back to top", exact: true });
+  await expect(top).toBeHidden();
+  await expect(
+    page.getByRole("button", { name: /ambient motion/ }),
+  ).toHaveCount(0);
+  await page.locator(".other-work").scrollIntoViewIfNeeded();
+  const rows = await page
+    .locator(".small-project")
+    .evaluateAll((cards) =>
+      cards.map((card) => [
+        card.firstElementChild!.getBoundingClientRect().bottom,
+        card.querySelector("h3")!.getBoundingClientRect().top,
+        card.querySelector(".small-project-info > p")!.getBoundingClientRect()
+          .top,
+        card.querySelector(".tech-tags")!.getBoundingClientRect().top,
+      ]),
+    );
+  rows[0].forEach((value, i) =>
+    expect(Math.abs(value - rows[1][i])).toBeLessThan(2),
+  );
+  await expect(top).toBeVisible();
+  await top.click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2);
+  await expect(page.locator("#home")).toBeFocused();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.locator("#experience").scrollIntoViewIfNeeded();
+  await top.click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2);
+  await expect(top).toBeHidden();
 });
