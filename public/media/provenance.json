@@ -1,0 +1,27 @@
+{
+  "capturedAt": "2026-11-07T11:40:14.420494+00:00",
+  "sourceRepository": "https://github.com/copilot-rast/dreamaan-web",
+  "snapshotCommit": "3bc1e077df7306719207415e03a93f118ddd047a",
+  "snapshotBranch": "dev-preview/recent-studio-20261105",
+  "unmergedContributions": [
+    "https://github.com/copilot-rast/dreamaan-web/pull/1693",
+    "https://github.com/copilot-rast/dreamaan-web/pull/1730"
+  ],
+  "method": "Authenticated local browser captures from an isolated source snapshot. Only temporary compiler dependency resolution was adjusted.",
+  "content": "Existing generated demonstration media, filtered in the real UI. Account header cropped from main screenshots and video. No AI generations or asset uploads were performed.",
+  "walkthrough": "Silent recording with descriptive English captions. Shows browsing, unified search, Studio settings, the shared picker, and batch selection. Does not demonstrate reference import or generation.",
+  "durationSeconds": 37.92,
+  "files": [
+    "dreamaan-art.webp",
+    "dreamaan-assets-mobile.webp",
+    "dreamaan-assets.webp",
+    "dreamaan-picker.webp",
+    "dreamaan-references.webp",
+    "dreamaan-search.webp",
+    "dreamaan-studio-mobile.webp",
+    "dreamaan-studio.webp",
+    "dreamaan-walkthrough.webm",
+    "walkthrough.vtt"
+  ],
+  "heroArtwork": "Decorative crop of generated demonstration artwork from an earlier local Dreamaan product capture. Not a screenshot of the current interface."
+}
