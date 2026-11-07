@@ -400,30 +400,7 @@ h1 {
   color: var(--accent);
   border-color: var(--accent);
 }
-.hero-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--line);
-  padding-block: 23px 28px;
-  gap: 20px;
-  color: #9999a6;
-  font-size: 11px;
-}
-.hero-bottom a {
-  color: #d7d5dc;
-}
-.hero-bottom > a {
-  width: 36px;
-  min-height: 44px;
-  display: grid;
-  place-items: center;
-  color: var(--accent);
-}
-.hero-play-hint {
-  font-size: 11px;
-  letter-spacing: 0.3px;
-}
+
 /* Owned beUI Marquee: https://beui.dev/components/motion/marquee */
 @keyframes beui-marquee {
   from {
@@ -1179,27 +1156,7 @@ h2 {
   gap: 10px;
   min-height: 44px;
 }
-.ambient-control {
-  position: fixed;
-  left: 22px;
-  bottom: 18px;
-  z-index: 25;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #b3a8bc;
-  background: #15161be8;
-  border: 1px solid #ffffff18;
-  border-radius: 40px;
-  padding: 0 13px;
-  min-height: 36px;
-  font-size: 10px;
-  backdrop-filter: blur(8px);
-}
-.ambient-control:hover {
-  color: var(--accent);
-  border-color: #e9a18f60;
-}
+
 /* Preserve the existing project content while the product recordings are deferred. */
 .case-dialog {
   position: fixed;
@@ -1491,9 +1448,7 @@ h2 {
   .hero-description {
     font-size: 16px;
   }
-  .hero-play-hint {
-    display: none;
-  }
+
   .about-grid,
   .experience-grid {
     gap: 45px;
@@ -1842,14 +1797,7 @@ h2 {
     font-size: 10px;
     min-height: 38px;
   }
-  .hero-bottom {
-    font-size: 10px;
-    padding-block: 15px 20px;
-    gap: 10px;
-  }
-  .hero-bottom > a {
-    width: 30px;
-  }
+
   .capability-strip {
     padding-block: 19px;
   }
@@ -2175,13 +2123,7 @@ h2 {
     min-height: 40px;
     font-size: 9px;
   }
-  .ambient-control {
-    left: 14px;
-    bottom: max(12px, env(safe-area-inset-bottom));
-    min-height: 36px;
-    font-size: 9px;
-    padding-inline: 11px;
-  }
+
   .case-dialog {
     width: calc(100% - 16px);
     max-height: calc(100dvh - 16px);
@@ -2344,8 +2286,7 @@ h2 {
   .about-statement span {
     color: #eeede8 !important;
   }
-  .ambient-background,
-  .ambient-control {
+  .ambient-background {
     display: none;
   }
   .technology-marquee {
@@ -2408,12 +2349,6 @@ h2 {
   .sculpture-controls .sculpture-rotate {
     display: none;
   }
-}
-
-.hero-bottom > span a {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: #d7d5dc66;
 }
 
 /* A connected, explorable toolkit. */
@@ -3320,5 +3255,89 @@ h2 {
   .career-chapter:before,
   .career-stop-dot {
     transition: none;
+  }
+}
+
+/* Equal preview and copy rows keep neighboring projects on one baseline. */
+.other-work {
+  column-gap: 38px;
+  row-gap: 0;
+}
+.small-project {
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+}
+.small-project-info {
+  display: contents;
+}
+.small-project-info > div:first-child {
+  padding-top: 24px;
+}
+.small-project > .game-footage {
+  align-self: stretch;
+}
+.small-project > .calorie-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  height: 100%;
+}
+.small-project > .calorie-preview .preview-caption {
+  margin-top: 0;
+}
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 30;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff30;
+  border-radius: 50%;
+  background: #17181eee;
+  color: var(--text);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 20px #0003;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+.back-to-top[hidden] {
+  display: none;
+}
+.back-to-top:hover {
+  background: #24252c;
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+@media (max-width: 700px) {
+  .other-work {
+    row-gap: 0;
+  }
+  .small-project + .small-project {
+    margin-top: 38px;
+  }
+  .back-to-top {
+    right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: none;
+  }
+  .back-to-top:hover {
+    transform: none;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+  .small-project + .small-project {
+    margin-top: 38px;
   }
 }

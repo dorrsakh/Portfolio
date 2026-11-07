@@ -20,15 +20,16 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` optionally selects an existing Chromium executable. Browser checks cover mobile navigation, keyboard chapters, modal focus restoration, video playback, media availability, responsive overflow, reduced motion, interactive filtering and calorie updates, ambient-motion pause, sculpture selection, and serious/critical axe accessibility findings.
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` optionally selects an existing Chromium executable. Browser checks cover mobile navigation, keyboard chapters, modal focus restoration, video playback, media availability, responsive overflow, reduced motion, interactive filtering and calorie updates, ambient reduced-motion support, sculpture selection, and serious/critical axe accessibility findings.
 
 ## Content
 
 - `src/data/portfolio.ts`: project chapters, contributions, and résumé-backed experience.
 - `src/components/CaseStudy.tsx`: Dreamaan case study and walkthrough.
 - `src/components/InterfaceScene.tsx`: draggable Three.js sculpture with two forms, rotation buttons, offscreen pause, and a static reduced-motion fallback.
-- `src/components/AmbientBackground.tsx`: page-wide pointer-reactive particle field with an explicit pause control.
+- `src/components/AmbientBackground.tsx`: page-wide pointer-reactive particle field that respects reduced-motion preferences.
 - `src/components/ProjectPreviews.tsx`: actual Game Hub footage and a working calorie study using labeled sample data.
+- `src/components/BackToTop.tsx`: floating smooth return to the hero with reduced-motion and keyboard focus support.
 - `src/components/CareerJourney.tsx`: visible career chapters, a sticky clickable timeline, scroll progress, and a Dreamaan case-study link.
 - `src/components/SkillPlayground.tsx`: filterable visual toolkit with selectable symbols, an orbital detail view, and illustrative snippets.
 - `src/components/MagneticLink.tsx`: restrained pointer feedback; disabled under reduced motion.
@@ -50,3 +51,5 @@ The portfolio has no Dreamaan API connection or credentials at runtime. All prod
 The technology strip uses the [beUI Marquee](https://beui.dev/components/motion/marquee), adapted for full-width tracks, keyboard pause, an explicit pause control, and reduced motion. Its MIT license is retained in `THIRD_PARTY_LICENSES/beui-LICENSE.txt`.
 
 Toolkit brand SVGs are served locally from `public/logos/`. Pinned upstream sources are recorded in `public/logos/sources.json`; Devicon, TanStack Query, and Lobe Icons license notices are retained in `THIRD_PARTY_LICENSES/`. Logos identify their respective tools.
+
+A floating back-to-top control appears after 400px of scrolling, uses smooth scrolling, and jumps instantly for reduced-motion preferences. Project cards share preview and copy rows to keep their headings, descriptions, and technology lists aligned.
