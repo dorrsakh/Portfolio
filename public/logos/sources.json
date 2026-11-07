@@ -69,5 +69,10 @@
     "name": "codex",
     "source": "https://raw.githubusercontent.com/lobehub/lobe-icons/ea434b96e75813517b377825e01c0df61dee8836/packages/static-svg/icons/codex.svg",
     "bytes": 1368
+  },
+  {
+    "name": "python",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/python/python-original.svg",
+    "bytes": 2300
   }
 ]

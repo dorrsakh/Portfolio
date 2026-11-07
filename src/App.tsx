@@ -11,18 +11,18 @@ import {
   Menu,
   Pause,
   Play,
-  Plus,
   X,
 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { chapters, experiences, projects } from "./data/portfolio";
+import { chapters, projects } from "./data/portfolio";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { CaseStudy } from "./components/CaseStudy";
 import { Marquee } from "./components/motion/marquee";
 import { AmbientBackground } from "./components/AmbientBackground";
 import { MagneticLink } from "./components/MagneticLink";
 import { GamePreview, CaloriePreview } from "./components/ProjectPreviews";
+import { CareerJourney } from "./components/CareerJourney";
 import { SkillPlayground } from "./components/SkillPlayground";
 const InterfaceScene = lazy(() => import("./components/InterfaceScene"));
 gsap.registerPlugin(ScrollTrigger);
@@ -586,55 +586,7 @@ function App() {
             </div>
             <SkillPlayground />
           </section>
-          <section
-            className="experience section-shell"
-            id="experience"
-            aria-labelledby="experience-heading"
-          >
-            <div className="section-rule" data-line />
-            <div className="experience-grid">
-              <div data-reveal>
-                <span className="section-index">03 / Along the way</span>
-                <h2 id="experience-heading">
-                  Always learning.
-                  <br />
-                  Always building.
-                </h2>
-                <p className="experience-note">
-                  Different teams. Different challenges.
-                  <br />
-                  The same attention to the details.
-                </p>
-              </div>
-              <div className="experience-list">
-                {experiences.map((item, index) => (
-                  <details
-                    key={item.company}
-                    className="experience-item"
-                    open={index === 0}
-                    data-reveal
-                  >
-                    <summary>
-                      <span className="experience-title">
-                        <strong>{item.company}</strong>
-                        <span>{item.role}</span>
-                      </span>
-                      <span className="experience-date">{item.date}</span>
-                      <Plus size={17} className="experience-plus" />
-                    </summary>
-                    <div className="experience-description">
-                      <p>{item.description}</p>
-                      <div className="tech-tags">
-                        {item.stack.map((tech) => (
-                          <span key={tech}>{tech}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </section>
+          <CareerJourney onExplore={() => setCaseOpen(true)} />
           <section
             className="contact section-shell"
             id="contact"
