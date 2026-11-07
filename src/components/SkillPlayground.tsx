@@ -1,27 +1,41 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
-import {
-  Atom,
-  Braces,
-  Layers,
-  Wind,
-  Database,
-  RefreshCw,
-  FlaskConical,
-  ScanLine,
-  PenTool,
-  GitBranch,
-  Terminal,
-  Sparkles,
-  ArrowUpRight,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+
+function BrandLogo({ name, large = false }: { name: string; large?: boolean }) {
+  const names =
+    name === "assistants" ? ["claude", "githubcopilot", "codex"] : [name];
+  return (
+    <span
+      className={`brand-logos ${large ? "brand-logos-large" : ""}`}
+      aria-hidden="true"
+    >
+      {names.map((logo) => (
+        <img
+          key={logo}
+          src={`/logos/${logo}.svg`}
+          alt=""
+          width={large ? 58 : 32}
+          height={large ? 58 : 32}
+          className={
+            ["nextjs", "cursor"].includes(logo)
+              ? "brand-logo-invert"
+              : ["codex", "githubcopilot"].includes(logo)
+                ? "brand-logo-light"
+                : undefined
+          }
+        />
+      ))}
+    </span>
+  );
+}
 
 const skills = [
   {
     name: "React",
     label: "Interfaces, composed.",
     group: "Build",
-    icon: Atom,
+    logo: "react",
     color: "#8ed5e8",
     description:
       "Reusable components, clear state, and interactions that feel natural.",
@@ -31,7 +45,7 @@ const skills = [
     name: "Next.js",
     label: "From page to product.",
     group: "Build",
-    icon: Layers,
+    logo: "nextjs",
     color: "#eeede8",
     description:
       "Application routes and connected experiences, built around real workflows.",
@@ -41,7 +55,7 @@ const skills = [
     name: "TypeScript",
     label: "A little more certainty.",
     group: "Build",
-    icon: Braces,
+    logo: "typescript",
     color: "#9cbbef",
     description:
       "Explicit contracts that make complex UI and API integration easier to reason about.",
@@ -51,7 +65,7 @@ const skills = [
     name: "Tailwind CSS",
     label: "Every pixel, considered.",
     group: "Build",
-    icon: Wind,
+    logo: "tailwindcss",
     color: "#8cd6d6",
     description:
       "Responsive layouts and consistent styling, from the first screen to the smallest state.",
@@ -61,7 +75,7 @@ const skills = [
     name: "Zustand",
     label: "State without the noise.",
     group: "Connect",
-    icon: Database,
+    logo: "zustand",
     color: "#ddbb9c",
     description:
       "Shared application state for connected controls and multi-step experiences.",
@@ -71,7 +85,7 @@ const skills = [
     name: "React Query",
     label: "Keep the UI in sync.",
     group: "Connect",
-    icon: RefreshCw,
+    logo: "reactquery",
     color: "#f0a1ad",
     description:
       "API data, caching, and loading states that keep the interface responsive.",
@@ -81,7 +95,7 @@ const skills = [
     name: "Jest",
     label: "Confidence in the details.",
     group: "Refine",
-    icon: FlaskConical,
+    logo: "jest",
     color: "#d9a9ce",
     description:
       "Focused tests for the behavior that matters, including the awkward edge cases.",
@@ -91,7 +105,7 @@ const skills = [
     name: "Playwright",
     label: "Try the whole journey.",
     group: "Refine",
-    icon: ScanLine,
+    logo: "playwright",
     color: "#afd6a9",
     description:
       "Browser tests for real interactions, keyboard access, and responsive experiences.",
@@ -101,7 +115,7 @@ const skills = [
     name: "Figma",
     label: "An eye before the code.",
     group: "Refine",
-    icon: PenTool,
+    logo: "figma",
     color: "#c6b0ef",
     description:
       "Exploring layouts and interaction details where design meets implementation.",
@@ -111,7 +125,7 @@ const skills = [
     name: "Git",
     label: "Small changes. Clear history.",
     group: "Workflow",
-    icon: GitBranch,
+    logo: "git",
     color: "#e9a18f",
     description:
       "Reviewable changes, collaboration, and careful integration into a shared codebase.",
@@ -121,7 +135,7 @@ const skills = [
     name: "Cursor",
     label: "A faster feedback loop.",
     group: "Workflow",
-    icon: Terminal,
+    logo: "cursor",
     color: "#c5c7d6",
     description:
       "AI-assisted editing with close attention to the code, context, and final behavior.",
@@ -131,7 +145,7 @@ const skills = [
     name: "AI assistants",
     label: "Assisted. Still considered.",
     group: "Workflow",
-    icon: Sparkles,
+    logo: "assistants",
     color: "#e7c493",
     description:
       "Claude, Copilot, and Codex support the process. I review, test, and own the result.",
@@ -143,7 +157,6 @@ export function SkillPlayground() {
   const [selected, setSelected] = useState(0);
   const [group, setGroup] = useState("All");
   const skill = skills[selected];
-  const Icon = skill.icon;
   function filter(next: string) {
     setGroup(next);
     if (next !== "All" && skill.group !== next)
@@ -189,7 +202,6 @@ export function SkillPlayground() {
           aria-label="Explore technologies"
         >
           {skills.map((s, i) => {
-            const NodeIcon = s.icon;
             return (
               <button
                 hidden={group !== "All" && s.group !== group}
@@ -200,7 +212,7 @@ export function SkillPlayground() {
                 style={{ "--node-color": s.color } as CSSProperties}
               >
                 <span className="skill-node-icon">
-                  <NodeIcon size={29} strokeWidth={1.35} />
+                  <BrandLogo name={s.logo} />
                 </span>
                 <span>{s.name}</span>
                 <ArrowUpRight className="skill-node-arrow" size={12} />
@@ -220,7 +232,7 @@ export function SkillPlayground() {
             <div className="skill-orbit orbit-two" />
             <div className="skill-orbit orbit-three" />
             <div className="skill-core" key={skill.name}>
-              <Icon size={58} strokeWidth={1} />
+              <BrandLogo name={skill.logo} large />
             </div>
             <span className="skill-satellite satellite-one" />
             <span className="skill-satellite satellite-two" />
