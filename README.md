@@ -20,7 +20,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` optionally selects an existing Chromium executable. Browser checks cover mobile navigation, keyboard chapters, modal focus restoration, video playback, media availability, responsive overflow, reduced motion, interactive filtering and calorie updates, keyboard curve controls, ambient-motion pause, sculpture selection, and serious/critical axe accessibility findings.
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` optionally selects an existing Chromium executable. Browser checks cover mobile navigation, keyboard chapters, modal focus restoration, video playback, media availability, responsive overflow, reduced motion, interactive filtering and calorie updates, ambient-motion pause, sculpture selection, and serious/critical axe accessibility findings.
 
 ## Content
 
@@ -30,7 +30,6 @@ npm run test:e2e
 - `src/components/AmbientBackground.tsx`: page-wide pointer-reactive particle field with an explicit pause control.
 - `src/components/ProjectPreviews.tsx`: actual Game Hub footage and a working calorie study using labeled sample data.
 - `src/components/SkillPlayground.tsx`: filterable visual toolkit with selectable symbols, an orbital detail view, and illustrative snippets.
-- `src/components/InteractionLab.tsx`: draggable curve with a keyboard-accessible alternative.
 - `src/components/MagneticLink.tsx`: restrained pointer feedback; disabled under reduced motion.
 - `public/media/`: optimized screenshots, decorative artwork, and walkthrough.
 - `public/Dorsa-Khalili-CV.pdf`: supplied résumé.

@@ -211,20 +211,6 @@ test("project footage plays and the calorie study updates", async ({
   await page.getByRole("button", { name: "Reset calorie preview" }).click();
   await expect(total).toHaveText("1,040");
 });
-test("the curve study has a keyboard alternative to dragging", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const path = page.locator(".lab-curve");
-  const before = await path.getAttribute("d");
-  await page.getByRole("button", { name: "Move the point" }).focus();
-  await page.keyboard.press("Enter");
-  await expect(path).not.toHaveAttribute("d", before!);
-  await page.getByRole("button", { name: "Soft response" }).click();
-  await expect(
-    page.getByRole("button", { name: "Direct response" }),
-  ).toHaveAttribute("aria-pressed", "false");
-});
 test("ambient motion can be stopped and sculpture forms are selectable", async ({
   page,
 }) => {

@@ -24,7 +24,6 @@ import { AmbientBackground } from "./components/AmbientBackground";
 import { MagneticLink } from "./components/MagneticLink";
 import { GamePreview, CaloriePreview } from "./components/ProjectPreviews";
 import { SkillPlayground } from "./components/SkillPlayground";
-import { InteractionLab } from "./components/InteractionLab";
 const InterfaceScene = lazy(() => import("./components/InterfaceScene"));
 gsap.registerPlugin(ScrollTrigger);
 
@@ -583,9 +582,6 @@ function App() {
                 <a className="text-link" href="/Dorsa-Khalili-CV.pdf" download>
                   The longer version <Download size={15} />
                 </a>
-                <div className="about-interaction">
-                  <InteractionLab />
-                </div>
               </div>
             </div>
             <SkillPlayground />
