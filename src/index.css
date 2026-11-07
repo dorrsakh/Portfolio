@@ -1007,77 +1007,6 @@ h2 {
 .about-copy .text-link {
   margin-top: 5px;
 }
-.craft-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 85px;
-  align-items: center;
-  margin-top: 58px;
-}
-.interaction-lab {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #17181c99;
-  padding: 19px 22px 15px;
-}
-.lab-top,
-.lab-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-}
-.lab-top > span {
-  font-size: 12px;
-  color: #c9c5d0;
-}
-.lab-top > button {
-  min-height: 35px;
-  font-size: 10px;
-  color: #c4b4d5;
-  border-bottom: 1px solid #b5a0cc55;
-}
-.interaction-lab svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 190px;
-  overflow: visible;
-}
-.lab-guide {
-  stroke: #ffffff12;
-  stroke-width: 0.7;
-  fill: none;
-  stroke-dasharray: 3 7;
-}
-.lab-curve {
-  stroke: #b9adc9;
-  stroke-width: 1;
-  fill: none;
-}
-.lab-origin {
-  fill: #a18eb6;
-}
-.lab-handle {
-  fill: var(--accent);
-  cursor: grab;
-  touch-action: none;
-  stroke: #101114;
-  stroke-width: 4;
-}
-.lab-handle:active {
-  cursor: grabbing;
-}
-.lab-bottom {
-  font-size: 10px;
-  color: #9e98a9;
-}
-.lab-bottom > button {
-  font-size: 10px;
-  min-height: 35px;
-  color: #d2c6db;
-  white-space: nowrap;
-}
 .toolkit-items {
   display: flex;
   flex-wrap: wrap;
@@ -1566,9 +1495,6 @@ h2 {
     display: none;
   }
   .about-grid,
-  .craft-grid {
-    gap: 50px;
-  }
   .experience-grid {
     gap: 45px;
     grid-template-columns: 0.9fr 1.3fr;
@@ -1759,32 +1685,10 @@ h2 {
   .about-copy > p:first-child {
     font-size: 18px;
   }
-  .craft-grid {
-    gap: 35px;
-    grid-template-columns: 1.1fr 1fr;
-  }
   .interaction-lab {
     padding: 14px 16px;
   }
-  .lab-top > span {
-    font-size: 10px;
-  }
-  .lab-top > button {
-    font-size: 9px;
-    min-width: 70px;
-  }
-  .lab-bottom {
-    align-items: flex-start;
-    font-size: 9px;
-    gap: 8px;
-  }
-  .lab-bottom > span {
-    max-width: 110px;
-    line-height: 1.8;
-  }
-  .lab-bottom > button {
-    font-size: 9px;
-  }
+
   .toolkit-items {
     gap: 8px 17px;
   }
@@ -2147,30 +2051,10 @@ h2 {
   .about-copy > p:first-child {
     font-size: 19px;
   }
-  .craft-grid {
-    grid-template-columns: 1fr;
-    gap: 35px;
-    margin-top: 35px;
-  }
   .interaction-lab {
     padding: 17px 19px;
   }
-  .lab-top > span {
-    font-size: 11px;
-  }
-  .lab-top > button {
-    font-size: 9px;
-  }
-  .lab-bottom {
-    align-items: center;
-    font-size: 9px;
-  }
-  .lab-bottom > span {
-    max-width: 180px;
-  }
-  .lab-bottom > button {
-    font-size: 10px;
-  }
+
   .toolkit-items {
     gap: 9px 20px;
     margin-top: 18px;
@@ -2436,12 +2320,6 @@ h2 {
   .social-links {
     gap: 16px;
   }
-  .lab-top > span {
-    font-size: 10px;
-  }
-  .lab-bottom > span {
-    max-width: 135px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -2539,9 +2417,6 @@ h2 {
 }
 
 /* A connected, explorable toolkit. */
-.about-interaction {
-  margin-top: 32px;
-}
 .skill-playground {
   margin-top: 96px;
   --skill-color: #8ed5e8;
@@ -2899,5 +2774,53 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   .skill-orbit {
     transition: none;
+  }
+}
+
+.game-footage {
+  margin: 0;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+  background: #18191ee8;
+  align-self: start;
+}
+.game-footage-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  font-size: 12px;
+  color: var(--text);
+}
+.game-footage-top > span:last-child {
+  color: var(--muted);
+  font-size: 11px;
+}
+.game-footage video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8/5;
+  background: #1a202c;
+}
+.game-footage figcaption {
+  padding: 13px 20px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 480px) {
+  .game-footage-top {
+    padding: 14px;
+    font-size: 11px;
+  }
+  .game-footage-top > span:last-child {
+    font-size: 10px;
+  }
+  .game-footage figcaption {
+    padding: 12px 14px;
   }
 }

@@ -1,0 +1,29 @@
+{
+  "capturedAt": "2026-11-07T13:02:24.766669+00:00",
+  "sourceRepository": "https://github.com/dorrsakh/Game-hub",
+  "snapshotCommit": "459731aa5de323b15b18f6298a3ee2bb6e402c3c",
+  "method": "Actual Chromium recording of the original React application running locally. Missing runtime dependencies were installed only in an isolated capture checkout. No application components or styles were redesigned. Developer tools hidden during capture.",
+  "catalog": "User-approved offline catalog. RAWG returned HTTP 522 on both rawg.io and api.rawg.io during capture. Browser request interception supplied 12 cached real Steam records in the existing game schema; filtering, sorting, search state, and theme switching run through the original application controls. Infinite loading and live RAWG behavior are not demonstrated.",
+  "catalogSource": "https://store.steampowered.com/api/appdetails",
+  "steamAppIds": [
+    620,
+    400,
+    550,
+    440,
+    570,
+    730,
+    292030,
+    1245620,
+    413150,
+    105600,
+    367520,
+    1145360
+  ],
+  "artwork": "Official store header images cached for capture and passed through local image routes. Game artwork belongs to its respective publishers. No API keys, catalog adapters, or credentials ship in the portfolio.",
+  "durationSeconds": 15.909999999999998,
+  "files": [
+    "gamehub-poster.webp",
+    "gamehub-walkthrough.webm",
+    "gamehub-walkthrough.vtt"
+  ]
+}
