@@ -2824,3 +2824,38 @@ h2 {
     padding: 12px 14px;
   }
 }
+
+.brand-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.brand-logos img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.brand-logos:has(img:nth-child(2)) img {
+  width: 23px;
+  height: 23px;
+}
+.brand-logos-large img {
+  width: 58px;
+  height: 58px;
+}
+.brand-logos-large:has(img:nth-child(2)) {
+  gap: 5px;
+}
+.brand-logos-large:has(img:nth-child(2)) img {
+  width: 26px;
+  height: 26px;
+}
+.brand-logo-light {
+  filter: brightness(0) invert(1);
+}
+
+.brand-logo-invert {
+  filter: invert(1);
+}

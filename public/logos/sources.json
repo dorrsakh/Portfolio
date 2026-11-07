@@ -1,0 +1,73 @@
+[
+  {
+    "name": "react",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/react/react-original.svg",
+    "bytes": 2387
+  },
+  {
+    "name": "nextjs",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/nextjs/nextjs-original.svg",
+    "bytes": 749
+  },
+  {
+    "name": "typescript",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/typescript/typescript-original.svg",
+    "bytes": 943
+  },
+  {
+    "name": "tailwindcss",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/tailwindcss/tailwindcss-original.svg",
+    "bytes": 689
+  },
+  {
+    "name": "zustand",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/zustand/zustand-original.svg",
+    "bytes": 123894
+  },
+  {
+    "name": "playwright",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/playwright/playwright-original.svg",
+    "bytes": 3760
+  },
+  {
+    "name": "figma",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/figma/figma-original.svg",
+    "bytes": 585
+  },
+  {
+    "name": "git",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/git/git-original.svg",
+    "bytes": 778
+  },
+  {
+    "name": "cursor",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/cursor/cursor-original.svg",
+    "bytes": 1038
+  },
+  {
+    "name": "claude",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/claude/claude-original.svg",
+    "bytes": 1835
+  },
+  {
+    "name": "githubcopilot",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/githubcopilot/githubcopilot-plain.svg",
+    "bytes": 2542,
+    "adaptation": "Added missing SVG namespace for standalone image rendering."
+  },
+  {
+    "name": "jest",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/jest/jest-plain.svg",
+    "bytes": 3118
+  },
+  {
+    "name": "reactquery",
+    "source": "https://raw.githubusercontent.com/TanStack/query/8f6da1e2a1b5e9afd774cd12bd3865df5c432984/media/emblem-light.svg",
+    "bytes": 9311
+  },
+  {
+    "name": "codex",
+    "source": "https://raw.githubusercontent.com/lobehub/lobe-icons/ea434b96e75813517b377825e01c0df61dee8836/packages/static-svg/icons/codex.svg",
+    "bytes": 1368
+  }
+]
