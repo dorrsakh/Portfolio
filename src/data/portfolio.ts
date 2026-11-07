@@ -46,7 +46,7 @@ export const chapters = [
     title: "Complex tools. A calmer flow.",
     description:
       "Responsive generation settings, connected reference workflows, and carefully handled feedback help creators stay focused on their work.",
-    image: "/media/dreamaan-studio.webp",
+    image: "/media/dreamaan-studio-generation.webp",
     alt: "Dreamaan Studio creative workspace with media and generation controls",
     problem:
       "A creative workspace has to balance model settings, references, and generation feedback without overwhelming the person using it.",

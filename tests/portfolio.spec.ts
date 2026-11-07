@@ -370,3 +370,58 @@ test("project cards align and back-to-top is available while scrolling", async (
   await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2);
   await expect(top).toBeHidden();
 });
+
+test("Dreamaan product tour shows the login and plays each actual capture", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: "Open Dreamaan case study", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog");
+  await dialog
+    .getByRole("button", { name: "Walkthrough", exact: true })
+    .click();
+  const selector = dialog.getByRole("group", { name: "Dreamaan product tour" });
+  await selector
+    .getByRole("button", { name: "Login Still", exact: true })
+    .click();
+  const login = dialog.getByAltText(
+    "Dreamaan redesigned login page with an animated media collage and sign-in form",
+  );
+  await expect(login).toBeVisible();
+  await expect
+    .poll(() =>
+      login.evaluate(
+        (el: HTMLImageElement) => el.complete && el.naturalWidth > 0,
+      ),
+    )
+    .toBeTruthy();
+  for (const name of ["Home", "Project", "Organization", "Studio"]) {
+    await selector
+      .getByRole("button", { name: `${name} Film`, exact: true })
+      .click();
+    const video = dialog.getByLabel(`Dreamaan ${name} walkthrough`);
+    await expect
+      .poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState))
+      .toBeGreaterThanOrEqual(2);
+    await expect
+      .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime))
+      .toBeGreaterThan(0);
+    expect(
+      await video.evaluate((el: HTMLVideoElement) => el.duration),
+    ).toBeGreaterThan(5);
+    expect(
+      await video.locator("track[kind=captions]").getAttribute("src"),
+    ).toMatch(/\.vtt$/);
+  }
+  await expect(
+    dialog.getByText(/Generation wait shortened; failed generations hidden/),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+});

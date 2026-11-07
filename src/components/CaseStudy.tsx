@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { DreamaanTour } from "./DreamaanTour";
 import { chapters } from "../data/portfolio";
 export function CaseStudy({
   onClose,
@@ -124,26 +125,7 @@ export function CaseStudy({
         </div>
         <div className="case-media">
           {video ? (
-            <video
-              controls
-              autoPlay
-              playsInline
-              preload="metadata"
-              poster="/media/dreamaan-assets.webp"
-              aria-label="Dreamaan Assets and Studio walkthrough"
-            >
-              <source
-                src="/media/dreamaan-walkthrough.webm"
-                type="video/webm"
-              />
-              <track
-                kind="captions"
-                src="/media/walkthrough.vtt"
-                srcLang="en"
-                label="English"
-                default
-              />
-            </video>
+            <DreamaanTour />
           ) : (
             <img
               src={current.image}
@@ -155,8 +137,8 @@ export function CaseStudy({
         </div>
         {video ? (
           <p className="case-video-note">
-            A silent walkthrough of the current development preview. Captions
-            describe the interactions.
+            Short clips from the current Home, project, organization, and Studio
+            interfaces, plus a still of the redesigned login page.
           </p>
         ) : (
           <div className="case-story">
