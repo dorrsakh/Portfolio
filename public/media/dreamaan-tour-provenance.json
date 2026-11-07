@@ -1,0 +1,42 @@
+{
+  "capturedAt": "2026-11-07T14:57:13.197050+00:00",
+  "sourceRepository": "https://github.com/copilot-rast/dreamaan-web",
+  "snapshotCommit": "fa24be25e98c3c38a0b35eef91114902ebcd3ddb",
+  "snapshotBranch": "dev-preview/recent-studio-20261105",
+  "runtime": "Existing fa24be25 local preview on port 7070, matching the forwarded Coder application. No Dreamaan source changes were made for recording.",
+  "workspace": "Existing Visual Studio Co / Night Train demonstration workspace.",
+  "scenes": [
+    {
+      "name": "home",
+      "durationSeconds": 9.5
+    },
+    {
+      "name": "project",
+      "durationSeconds": 9.47
+    },
+    {
+      "name": "organization",
+      "durationSeconds": 7.95
+    },
+    {
+      "name": "studio-generation",
+      "durationSeconds": 17.73
+    }
+  ],
+  "generation": {
+    "jobId": "cmw6ire1x00037e9yts7tr5pb",
+    "status": "COMPLETED",
+    "prompt": "A tiny floating island with a cozy wooden cabin, warm window light, soft clouds, cinematic 3D illustration, no text.",
+    "credits": 35,
+    "createdAt": "2026-11-07T14:49:12.933Z",
+    "recoveredAfterResponseTimeout": true
+  },
+  "generationTiming": {
+    "actualDurationSeconds": 67.58,
+    "waitShortened": true,
+    "method": "Actual prompt entry and submit footage is followed by a capture of the same confirmed completed job. There was one submit and no replay after the recording response timeout."
+  },
+  "filters": "Studio Hide failed was enabled through the real View settings switch. Image output filter was used for the generation walkthrough.",
+  "media": "Login is an unauthenticated screenshot. Home, project, and organization clips show actual interface interactions. The generated floating-island image is a real Seedream 5 Pro output via the configured BytePlus route, charged 35 credits.",
+  "privacy": "No cookies, session files, backend keys, or capture adapters are included in the portfolio."
+}

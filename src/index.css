@@ -3341,3 +3341,89 @@ h2 {
     margin-top: 38px;
   }
 }
+
+.dreamaan-tour {
+  background: #111216;
+}
+.tour-selector {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.tour-selector button {
+  min-height: 48px;
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.tour-selector button > span {
+  font-size: 9px;
+  opacity: 0.7;
+}
+.tour-selector button[aria-pressed="true"] {
+  color: var(--text);
+  background: #ffffff09;
+  border-color: #e9a18f55;
+}
+.tour-selector button:hover {
+  color: var(--accent);
+}
+.tour-screen video,
+.tour-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3/2;
+  object-fit: contain;
+  background: #101114;
+}
+.tour-description {
+  padding: 22px 25px;
+  border-top: 1px solid var(--line);
+}
+.tour-description h3 {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.4px;
+  margin: 0 0 10px;
+}
+.tour-description p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0;
+}
+.tour-description > span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 15px;
+}
+@media (max-width: 600px) {
+  .tour-selector {
+    gap: 4px;
+    padding: 8px;
+  }
+  .tour-selector button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .tour-selector button > span {
+    display: none;
+  }
+  .tour-description {
+    padding: 18px;
+  }
+  .tour-description h3 {
+    font-size: 20px;
+  }
+}
