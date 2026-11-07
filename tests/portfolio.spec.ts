@@ -180,23 +180,28 @@ test("technology marquee fills wide screens and supports motion controls", async
   expect(Math.abs((await x()) - reduced)).toBeLessThan(0.5);
 });
 
-test("project studies provide real filtering and calorie state updates", async ({
+test("project footage plays and the calorie study updates", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Puzzle", exact: true }).click();
-  await expect(page.locator(".preview-game")).toHaveCount(1);
-  await expect(page.locator(".preview-game")).toContainText("Monument");
-  await page
-    .getByRole("textbox", { name: "Filter preview games" })
-    .fill("missing");
-  await expect(page.getByText("No matches. Try another title.")).toBeVisible();
-  await page.getByRole("textbox", { name: "Filter preview games" }).fill("");
-  await page
-    .locator(".game-preview")
-    .getByRole("button", { name: "All", exact: true })
-    .click();
-  await expect(page.locator(".preview-game")).toHaveCount(3);
+  const video = page.getByLabel(
+    "Game Hub walkthrough using an offline catalog",
+  );
+  await expect(video).toHaveAttribute("preload", "none");
+  await expect(video).not.toHaveAttribute("autoplay");
+  await expect(
+    page.getByText("Actual app footage · Offline demo catalog.", {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await video.evaluate((el: HTMLVideoElement) => el.play());
+  await expect
+    .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime))
+    .toBeGreaterThan(0);
+  await expect
+    .poll(() => video.evaluate((el: HTMLVideoElement) => el.duration))
+    .toBeGreaterThan(10);
+  await video.evaluate((el: HTMLVideoElement) => el.pause());
   const total = page.getByLabel("Preview net calories");
   await expect(total).toHaveText("1,040");
   await page.getByRole("button", { name: "Add a snack" }).click();

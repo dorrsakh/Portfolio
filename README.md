@@ -28,14 +28,14 @@ npm run test:e2e
 - `src/components/CaseStudy.tsx`: Dreamaan case study and walkthrough.
 - `src/components/InterfaceScene.tsx`: draggable Three.js sculpture with two forms, rotation buttons, offscreen pause, and a static reduced-motion fallback.
 - `src/components/AmbientBackground.tsx`: page-wide pointer-reactive particle field with an explicit pause control.
-- `src/components/ProjectPreviews.tsx`: working search/filter and calorie studies using labeled sample data.
+- `src/components/ProjectPreviews.tsx`: actual Game Hub footage and a working calorie study using labeled sample data.
 - `src/components/SkillPlayground.tsx`: filterable visual toolkit with selectable symbols, an orbital detail view, and illustrative snippets.
 - `src/components/InteractionLab.tsx`: draggable curve with a keyboard-accessible alternative.
 - `src/components/MagneticLink.tsx`: restrained pointer feedback; disabled under reduced motion.
 - `public/media/`: optimized screenshots, decorative artwork, and walkthrough.
 - `public/Dorsa-Khalili-CV.pdf`: supplied résumé.
 
-Dreamaan is the featured case study. Its unmerged Assets and Studio contributions are labeled in progress, link to their PRs, and distinguish Dorsa’s role from the team’s work. Media provenance is recorded alongside the exports. Game Hub and Calorie Tracker visuals are labeled interface studies; their descriptions are based on verified repository features.
+Dreamaan is the featured case study. Its unmerged Assets and Studio contributions are labeled in progress, link to their PRs, and distinguish Dorsa’s role from the team’s work. Media provenance is recorded alongside the exports. Game Hub uses actual browser footage of its source at commit `459731aa5de323b15b18f6298a3ee2bb6e402c3c`. RAWG returned HTTP 522 during capture, so the recording uses a clearly labeled offline catalog with real game metadata and artwork cached from Steam. Its UI and filtering, sorting, search, and theme controls run in the original app. See `public/media/gamehub-provenance.json`. Calorie Tracker remains a labeled interaction study.
 
 The redesign retains the existing Dreamaan media. New login, dashboard, and generation recordings are deferred.
 

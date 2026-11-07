@@ -1,67 +1,36 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUp, RotateCcw, Search } from "lucide-react";
-const games = [
-  { name: "Afterlight", genre: "Adventure", kind: "horizon" },
-  { name: "Monument", genre: "Puzzle", kind: "monument" },
-  { name: "Wildwood", genre: "Adventure", kind: "forest" },
-];
+import { ArrowDown, ArrowUp, RotateCcw } from "lucide-react";
 export function GamePreview() {
-  const [query, setQuery] = useState(""),
-    [genre, setGenre] = useState("All");
-  const shown = games.filter(
-    (g) =>
-      (genre === "All" || g.genre === genre) &&
-      g.name.toLowerCase().includes(query.toLowerCase()),
-  );
   return (
-    <div className="interactive-preview game-preview" data-tilt>
-      <div className="preview-top">
-        <span>Find your next adventure</span>
-        <span className="preview-live">Interactive study</span>
+    <figure className="game-footage">
+      <div className="game-footage-top">
+        <span>Game Hub / In action</span>
+        <span>Recorded from the app</span>
       </div>
-      <label className="preview-search">
-        <Search size={15} aria-hidden="true" />
-        <input
-          aria-label="Filter preview games"
-          placeholder="Search games…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </label>
-      <div
-        className="preview-genres"
-        role="group"
-        aria-label="Preview game genre"
+      <video
+        controls
+        playsInline
+        preload="none"
+        poster="/media/gamehub-poster.webp"
+        aria-label="Game Hub walkthrough using an offline catalog"
+        aria-describedby="gamehub-capture-note"
       >
-        {["All", "Adventure", "Puzzle"].map((item) => (
-          <button
-            key={item}
-            aria-pressed={genre === item}
-            onClick={() => setGenre(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-      <div className="preview-games" aria-live="polite">
-        {shown.map((game) => (
-          <div className="preview-game" key={game.name}>
-            <div className={`game-landscape ${game.kind}`} aria-hidden="true">
-              <span />
-              <i />
-            </div>
-            <span>{game.name}</span>
-            <small>{game.genre}</small>
-          </div>
-        ))}
-        {!shown.length && (
-          <p className="preview-empty">No matches. Try another title.</p>
-        )}
-      </div>
-      <p className="preview-caption">
-        Try the search and filters. Sample data.
-      </p>
-    </div>
+        <source src="/media/gamehub-walkthrough.webm" type="video/webm" />
+        <track
+          kind="captions"
+          src="/media/gamehub-walkthrough.vtt"
+          srcLang="en"
+          label="English"
+          default
+        />
+        Your browser does not support this video.{" "}
+        <a href="/media/gamehub-walkthrough.webm">Download the walkthrough</a>.
+      </video>
+      <figcaption id="gamehub-capture-note">
+        Actual app footage · Offline demo catalog. Browse, filter, sort, and
+        search.
+      </figcaption>
+    </figure>
   );
 }
 export function CaloriePreview() {
