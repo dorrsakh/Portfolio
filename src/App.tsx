@@ -12,6 +12,8 @@ import {
   Menu,
   MoveUpRight,
   Plus,
+  Pause,
+  Play,
   X,
 } from "lucide-react";
 import { gsap } from "gsap";
@@ -19,6 +21,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { chapters, experiences, projects } from "./data/portfolio";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { CaseStudy } from "./components/CaseStudy";
+import { Marquee } from "./components/motion/marquee";
 const InterfaceScene = lazy(() => import("./components/InterfaceScene"));
 gsap.registerPlugin(ScrollTrigger);
 function App() {
@@ -28,6 +31,7 @@ function App() {
     [caseOpen, setCaseOpen] = useState(false),
     [copied, setCopied] = useState(false),
     [active, setActive] = useState("home");
+  const [marqueePaused, setMarqueePaused] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const current = chapters[chapter];
   useEffect(() => {
@@ -283,8 +287,13 @@ function App() {
               </a>
             </div>
           </section>
-          <div className="capability-strip" aria-label="Core technologies">
-            <div>
+          <div className="capability-strip" data-paused={marqueePaused}>
+            <Marquee
+              label="Core technologies"
+              className="technology-marquee"
+              speed={36}
+              gap="3rem"
+            >
               {[
                 "React",
                 "TypeScript",
@@ -293,14 +302,31 @@ function App() {
                 "Playwright",
                 "AI-assisted development",
               ].map((item) => (
-                <span key={item}>
+                <span className="technology-item" key={item}>
                   {item}
                   <span className="strip-spark" aria-hidden="true">
                     ✳
                   </span>
                 </span>
               ))}
-            </div>
+            </Marquee>
+            <button
+              type="button"
+              className="icon-button marquee-control"
+              aria-label={
+                marqueePaused
+                  ? "Resume technology marquee"
+                  : "Pause technology marquee"
+              }
+              aria-pressed={marqueePaused}
+              onClick={() => setMarqueePaused(!marqueePaused)}
+            >
+              {marqueePaused ? (
+                <Play size={14} aria-hidden="true" />
+              ) : (
+                <Pause size={14} aria-hidden="true" />
+              )}
+            </button>
           </div>
           <section
             className="work section-shell"

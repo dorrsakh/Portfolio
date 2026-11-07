@@ -594,24 +594,7 @@ h1 {
   overflow: hidden;
   background: #15151a;
 }
-.capability-strip > div {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 34px;
-  width: max-content;
-  min-width: 100%;
-  padding: 25px 40px;
-}
-.capability-strip > div > span {
-  display: flex;
-  align-items: center;
-  gap: 34px;
-  color: #b8b2c2;
-  font-family: var(--display);
-  font-size: 15px;
-  white-space: nowrap;
-}
+
 .strip-spark {
   color: #62576f;
   font-size: 19px;
@@ -2398,17 +2381,7 @@ h2 {
     font-size: 7px;
     gap: 8px;
   }
-  .capability-strip > div {
-    padding: 20px 24px;
-    gap: 25px;
-    justify-content: flex-start;
-    animation: marquee 35s linear infinite;
-    min-width: max-content;
-  }
-  .capability-strip > div > span {
-    font-size: 13px;
-    gap: 25px;
-  }
+
   .strip-spark {
     font-size: 15px;
   }
@@ -2857,16 +2830,6 @@ h2 {
     gap: 4px;
   }
 }
-@keyframes marquee {
-  0%,
-  20% {
-    transform: translateX(0);
-  }
-  80%,
-  100% {
-    transform: translateX(min(0px, calc(100vw - 100%)));
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2941,9 +2904,7 @@ h2 {
 .case-link {
   align-self: flex-start;
 }
-.capability-strip > div {
-  animation: none;
-}
+
 .chapter-tabs button {
   min-width: 44px;
 }
@@ -3073,4 +3034,101 @@ button:active,
   color: var(--muted);
   line-height: 1.8;
   margin-top: 12px;
+}
+
+/* beUI marquee: https://beui.dev/components/motion/marquee */
+@keyframes beui-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap, 1rem)));
+  }
+}
+@keyframes beui-marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap, 1rem)));
+  }
+}
+.animate-marquee {
+  animation-name: beui-marquee;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.animate-marquee-vertical {
+  animation-name: beui-marquee-vertical;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.capability-strip {
+  position: relative;
+  padding-block: 24px;
+}
+.technology-marquee {
+  margin-right: 60px;
+  outline-offset: -4px !important;
+}
+.technology-item {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  white-space: nowrap;
+  font-family: var(--display);
+  font-size: 15px;
+  color: #b8b2c2;
+}
+.marquee-control {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  background: #15151a;
+  z-index: 1;
+}
+.capability-strip[data-paused="true"] .animate-marquee,
+.capability-strip[data-paused="true"] .animate-marquee-vertical {
+  animation-play-state: paused;
+}
+@media (max-width: 600px) {
+  .capability-strip {
+    padding-block: 20px;
+  }
+  .technology-item {
+    font-size: 13px;
+  }
+  .technology-item,
+  .technology-marquee {
+    --gap: 2rem;
+  }
+  .technology-item {
+    gap: 2rem;
+  }
+  .technology-marquee {
+    margin-right: 52px;
+  }
+  .marquee-control {
+    right: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .technology-marquee {
+    margin-right: 0;
+    overflow-x: auto;
+    mask-image: none;
+    scrollbar-width: thin;
+    scrollbar-color: #62576f #15151a;
+    padding-bottom: 4px;
+  }
+  .technology-marquee > [inert] {
+    display: none;
+  }
+  .marquee-control {
+    display: none;
+  }
 }

@@ -37,3 +37,5 @@ The portfolio has no Dreamaan API connection or credentials at runtime. All prod
 ## Deployment
 
 `npm run build` produces `dist/`, ready for a static host at a domain root. The page uses anchor navigation and needs no application backend. The workspace preview runs on port 5173. No public deployment is configured by this change.
+
+The technology strip uses the [beUI Marquee](https://beui.dev/components/motion/marquee), adapted for full-width tracks, keyboard pause, an explicit pause control, and reduced motion. Its MIT license is retained in `THIRD_PARTY_LICENSES/beui-LICENSE.txt`.
