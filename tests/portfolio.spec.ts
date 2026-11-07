@@ -192,7 +192,10 @@ test("project studies provide real filtering and calorie state updates", async (
     .fill("missing");
   await expect(page.getByText("No matches. Try another title.")).toBeVisible();
   await page.getByRole("textbox", { name: "Filter preview games" }).fill("");
-  await page.getByRole("button", { name: "All", exact: true }).click();
+  await page
+    .locator(".game-preview")
+    .getByRole("button", { name: "All", exact: true })
+    .click();
   await expect(page.locator(".preview-game")).toHaveCount(3);
   const total = page.getByLabel("Preview net calories");
   await expect(total).toHaveText("1,040");
@@ -246,4 +249,51 @@ test("ambient motion can be stopped and sculpture forms are selectable", async (
   await expect(
     page.getByRole("button", { name: "Resume ambient motion" }),
   ).toBeHidden();
+});
+
+test("the visual toolkit filters skills and supports keyboard selection", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const toolkit = page.getByRole("region", { name: /Different tools/ });
+  const nodes = page.getByRole("group", { name: "Explore technologies" });
+  await expect(nodes.getByRole("button")).toHaveCount(12);
+  await nodes.getByRole("button", { name: "TypeScript", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: "A little more certainty." }),
+  ).toBeVisible();
+  await expect(
+    nodes.getByRole("button", { name: "TypeScript", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page
+    .getByRole("group", { name: "Filter technologies" })
+    .getByRole("button", { name: "Refine", exact: true })
+    .click();
+  await expect(nodes.getByRole("button")).toHaveCount(3);
+  await expect(
+    page.getByRole("heading", { name: "Confidence in the details." }),
+  ).toBeVisible();
+  await nodes.getByRole("button", { name: "Playwright", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Try the whole journey." }),
+  ).toBeVisible();
+  await page
+    .getByRole("group", { name: "Filter technologies" })
+    .getByRole("button", { name: "All", exact: true })
+    .click();
+  await expect(nodes.getByRole("button")).toHaveCount(12);
+  await expect(toolkit).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 812 });
+  await nodes
+    .getByRole("button", { name: "AI assistants", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Assisted. Still considered." }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
 });

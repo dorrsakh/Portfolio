@@ -29,6 +29,7 @@ npm run test:e2e
 - `src/components/InterfaceScene.tsx`: draggable Three.js sculpture with two forms, rotation buttons, offscreen pause, and a static reduced-motion fallback.
 - `src/components/AmbientBackground.tsx`: page-wide pointer-reactive particle field with an explicit pause control.
 - `src/components/ProjectPreviews.tsx`: working search/filter and calorie studies using labeled sample data.
+- `src/components/SkillPlayground.tsx`: filterable visual toolkit with selectable symbols, an orbital detail view, and illustrative snippets.
 - `src/components/InteractionLab.tsx`: draggable curve with a keyboard-accessible alternative.
 - `src/components/MagneticLink.tsx`: restrained pointer feedback; disabled under reduced motion.
 - `public/media/`: optimized screenshots, decorative artwork, and walkthrough.

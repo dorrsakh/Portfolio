@@ -23,6 +23,7 @@ import { Marquee } from "./components/motion/marquee";
 import { AmbientBackground } from "./components/AmbientBackground";
 import { MagneticLink } from "./components/MagneticLink";
 import { GamePreview, CaloriePreview } from "./components/ProjectPreviews";
+import { SkillPlayground } from "./components/SkillPlayground";
 import { InteractionLab } from "./components/InteractionLab";
 const InterfaceScene = lazy(() => import("./components/InterfaceScene"));
 gsap.registerPlugin(ScrollTrigger);
@@ -87,55 +88,49 @@ function App() {
             scrub: true,
           },
         });
-        gsap.utils
-          .toArray<HTMLElement>("[data-reveal]")
-          .forEach((el) =>
-            gsap.fromTo(
-              el,
-              { y: 36, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                duration: 0.85,
-                ease: "power3.out",
-                scrollTrigger: { trigger: el, start: "top 91%", once: true },
+        gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) =>
+          gsap.fromTo(
+            el,
+            { y: 36, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.85,
+              ease: "power3.out",
+              scrollTrigger: { trigger: el, start: "top 91%", once: true },
+            },
+          ),
+        );
+        gsap.utils.toArray<HTMLElement>("[data-depth]").forEach((el) =>
+          gsap.fromTo(
+            el,
+            { scale: 0.94, y: 35, rotateX: 4 },
+            {
+              scale: 1,
+              y: 0,
+              rotateX: 0,
+              ease: "none",
+              scrollTrigger: {
+                trigger: el,
+                start: "top bottom",
+                end: "top 24%",
+                scrub: 1,
               },
-            ),
-          );
-        gsap.utils
-          .toArray<HTMLElement>("[data-depth]")
-          .forEach((el) =>
-            gsap.fromTo(
-              el,
-              { scale: 0.94, y: 35, rotateX: 4 },
-              {
-                scale: 1,
-                y: 0,
-                rotateX: 0,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: el,
-                  start: "top bottom",
-                  end: "top 24%",
-                  scrub: 1,
-                },
-              },
-            ),
-          );
-        gsap.utils
-          .toArray<HTMLElement>("[data-line]")
-          .forEach((el) =>
-            gsap.fromTo(
-              el,
-              { scaleX: 0 },
-              {
-                scaleX: 1,
-                duration: 1.2,
-                ease: "power3.out",
-                scrollTrigger: { trigger: el, start: "top 95%", once: true },
-              },
-            ),
-          );
+            },
+          ),
+        );
+        gsap.utils.toArray<HTMLElement>("[data-line]").forEach((el) =>
+          gsap.fromTo(
+            el,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 1.2,
+              ease: "power3.out",
+              scrollTrigger: { trigger: el, start: "top 95%", once: true },
+            },
+          ),
+        );
         gsap.fromTo(
           ".about-statement span",
           { color: "#85858f" },
@@ -588,33 +583,12 @@ function App() {
                 <a className="text-link" href="/Dorsa-Khalili-CV.pdf" download>
                   The longer version <Download size={15} />
                 </a>
-              </div>
-            </div>
-            <div className="craft-grid">
-              <InteractionLab />
-              <div className="toolkit" data-reveal>
-                <span className="section-index">A few tools I work with</span>
-                <div className="toolkit-items">
-                  {[
-                    "React",
-                    "TypeScript",
-                    "Next.js",
-                    "Tailwind CSS",
-                    "Zustand",
-                    "React Query",
-                    "Jest",
-                    "Playwright",
-                    "Figma",
-                    "Git",
-                    "Cursor",
-                    "Codex",
-                  ].map((tool) => (
-                    <span key={tool}>{tool}</span>
-                  ))}
+                <div className="about-interaction">
+                  <InteractionLab />
                 </div>
-                <p>The tools change. The care stays.</p>
               </div>
             </div>
+            <SkillPlayground />
           </section>
           <section
             className="experience section-shell"
