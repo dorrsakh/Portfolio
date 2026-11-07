@@ -390,11 +390,13 @@ test("Dreamaan product tour shows the login and plays each actual capture", asyn
     "Dreamaan redesigned login page with an animated media collage and sign-in form",
   );
   await expect(login).toBeVisible();
-  expect(
-    await login.evaluate(
-      (el: HTMLImageElement) => el.complete && el.naturalWidth > 0,
-    ),
-  ).toBeTruthy();
+  await expect
+    .poll(() =>
+      login.evaluate(
+        (el: HTMLImageElement) => el.complete && el.naturalWidth > 0,
+      ),
+    )
+    .toBeTruthy();
   for (const name of ["Home", "Project", "Organization", "Studio"]) {
     await selector
       .getByRole("button", { name: `${name} Film`, exact: true })
