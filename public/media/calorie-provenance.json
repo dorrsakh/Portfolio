@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/dorrsakh/Calorie-Tracker",
+  "commit": "8af28f5dd0169b2dff13181553c8ff1f2a58592d",
+  "capturedAt": "2026-11-08T08:45:41Z",
+  "method": "Unmodified source served locally; actual UI interactions. Demonstration meal and workout entries.",
+  "durationSeconds": 9.52,
+  "actions": [
+    "Add a meal",
+    "Add a workout",
+    "Reload to show persistence",
+    "Filter meal entries"
+  ]
+}

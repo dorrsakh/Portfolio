@@ -1,0 +1,10 @@
+WEBVTT
+
+00:00.000 --> 00:03.000
+Adding a demonstration meal updates the daily totals.
+
+00:03.000 --> 00:06.000
+A workout updates calories burned and remaining.
+
+00:06.000 --> 00:09.520
+Entries persist after reload and can be filtered.

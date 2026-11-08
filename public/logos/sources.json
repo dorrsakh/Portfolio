@@ -74,5 +74,15 @@
     "name": "python",
     "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/python/python-original.svg",
     "bytes": 2300
+  },
+  {
+    "name": "javascript",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/javascript/javascript-original.svg",
+    "bytes": 1144
+  },
+  {
+    "name": "bootstrap",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/bootstrap/bootstrap-original.svg",
+    "bytes": 2075
   }
 ]
