@@ -116,5 +116,11 @@
     "name": "css3",
     "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/css3/css3-original.svg",
     "bytes": 778
+  },
+  {
+    "name": "shadcnui",
+    "source": "https://github.com/simple-icons/simple-icons/blob/develop/icons/shadcnui.svg",
+    "blobSha": "5a23e483ed191e092e3f6751ffc1ef7bcd0630a2",
+    "bytes": 415
   }
 ]

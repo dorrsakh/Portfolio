@@ -1,5 +1,12 @@
 export const tools = [
   [
+    "shadcnui",
+    "shadcn/ui",
+    "V",
+    "Composable React components with accessible foundations.",
+    [],
+  ],
+  [
     "python",
     "Python",
     "Y",
