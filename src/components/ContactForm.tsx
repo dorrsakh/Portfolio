@@ -10,7 +10,7 @@ export function ContactForm() {
     const data = new FormData(form.current!);
     return {
       subject: `${topic} — ${String(data.get("name")).trim()}`,
-      body: `Hi Dorsa,\n\n${String(data.get("message")).trim()}\n\n${String(data.get("name")).trim()}\n${String(data.get("email")).trim()}`,
+      body: `Hi Dorsa,\n\n${String(data.get("message")).trim()}\n\n${String(data.get("name")).trim()}`,
     };
   }
   function validate() {
@@ -116,19 +116,6 @@ export function ContactForm() {
         maxLength={4000}
         rows={3}
       />
-      <label className="reply-label" htmlFor="contact-email">
-        Reply to{" "}
-        <input
-          id="contact-email"
-          name="email"
-          aria-label="Your email"
-          type="email"
-          autoComplete="email"
-          placeholder="you@example.com"
-          required
-          maxLength={254}
-        />
-      </label>
       <div className="letter-actions">
         <button type="submit" className="letter-send">
           Open Gmail <ArrowUpRight size={20} />

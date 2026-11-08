@@ -260,9 +260,6 @@ test("sticky navigation, hero social icons, and contact drafts work", async ({
   await form.getByRole("button", { name: "Open Gmail" }).click();
   await expect(page.getByLabel("Your name", { exact: true })).toBeFocused();
   await page.getByLabel("Your name", { exact: true }).fill("Portfolio Visitor");
-  await page
-    .getByLabel("Your email", { exact: true })
-    .fill("visitor@example.com");
   await page.getByRole("radio", { name: "An opportunity" }).check();
   await page
     .getByLabel("Your message", { exact: true })
@@ -272,7 +269,7 @@ test("sticky navigation, hero social icons, and contact drafts work", async ({
   const draft = await page.evaluate(() => navigator.clipboard.readText());
   expect(draft).toContain("To: dorrsakhalili@gmail.com");
   expect(draft).toContain("An opportunity — Portfolio Visitor");
-  expect(draft).toContain("visitor@example.com");
+  await expect(page.getByLabel("Your email", { exact: true })).toHaveCount(0);
   expect(draft).toContain("frontend project");
   await expect(
     page.getByRole("button", { name: "React", exact: true }),
@@ -423,9 +420,6 @@ test("contact form opens Gmail with recipient, topic and complete visitor messag
   );
   await page.goto("/");
   await page.getByLabel("Your name", { exact: true }).fill("Visitor & Co");
-  await page
-    .getByLabel("Your email", { exact: true })
-    .fill("visitor@example.com");
   await page.getByRole("radio", { name: "An opportunity" }).check();
   const message = "A React project & a few ideas.\nCould we discuss it?";
   await page.getByLabel("Your message", { exact: true }).fill(message);
@@ -439,7 +433,9 @@ test("contact form opens Gmail with recipient, topic and complete visitor messag
   expect(url.searchParams.get("to")).toBe("dorrsakhalili@gmail.com");
   expect(url.searchParams.get("su")).toBe("An opportunity — Visitor & Co");
   expect(url.searchParams.get("body")).toContain(message);
-  expect(url.searchParams.get("body")).toContain("visitor@example.com");
+  expect(url.searchParams.get("body")).toBe(
+    `Hi Dorsa,\n\n${message}\n\nVisitor & Co`,
+  );
   await gmail.close();
 });
 

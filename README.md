@@ -25,7 +25,7 @@ CHOKIDAR_USEPOLLING=true npm run dev -- --host 0.0.0.0
 - Space / Work and Enter / Contact keys navigate to their sections. The keyboard moves from the hero to the stack, rotates aside for work, and returns with floating caps beside contact.
 - Press/release recordings play after a user gesture. An animated cursor follows pointer movement and changes over project previews.
 - The header remains sticky, with GitHub, LinkedIn, Gmail, and Telegram icons available in both the hero and contact section.
-- A letter-style contact form validates name, email, and message, offers project/opportunity topics, and opens Gmail in a new tab with the recipient, subject, and message prefilled. A copy-draft control provides an alternative. It does not claim automatic delivery or require an email service credential.
+- A letter-style contact form validates name and message, offers project/opportunity topics, and opens Gmail in a new tab with the recipient, subject, and message prefilled. A copy-draft control provides an alternative. It does not claim automatic delivery or require an email service credential.
 - Project cards show actual posters and preview muted footage on pointer intent. Offscreen previews pause. Touch and reduced-motion users keep the same controls without hover playback.
 - Native project dialogs provide video controls, captions, Escape dismissal, focus containment, and focus restoration.
 - The scroll-drawn career trail follows a winding route between staggered role cards, with selectable context and a sticky chapter counter. Full details remain in the supplied résumé.
