@@ -188,10 +188,9 @@ export default function App() {
                     <br />
                     Khalili<span>.</span>
                   </h1>
-                  <p className="hero-description">
-                    Thoughtful interfaces.
-                    <br />A little play.
-                  </p>
+                  <a className="hero-contact-link" href="#contact">
+                    Contact me <ArrowUpRight size={20} />
+                  </a>
                   <SocialAccounts className="hero-socials" />
                 </div>
                 <div className="hero-keyboard-anchor" aria-hidden="true" />
