@@ -2536,3 +2536,19 @@ html[data-keyboard-dragging] .creative-cursor {
     transition: none;
   }
 }
+.hero-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 4px 0;
+  font: 500 20px Space, sans-serif;
+  color: var(--coral);
+}
+.hero-contact-link svg {
+  transition: transform 0.25s ease;
+}
+.hero-contact-link:hover svg {
+  transform: translate(3px, -3px);
+}
