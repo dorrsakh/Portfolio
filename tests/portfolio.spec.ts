@@ -251,7 +251,7 @@ test("sticky navigation, hero social icons, and contact drafts work", async ({
     )
     .toBe(0);
   const form = page.locator(".contact-letter");
-  await form.getByRole("button", { name: "Continue in email" }).click();
+  await form.getByRole("button", { name: "Open Gmail" }).click();
   await expect(page.getByLabel("Your name", { exact: true })).toBeFocused();
   await page.getByLabel("Your name", { exact: true }).fill("Portfolio Visitor");
   await page
@@ -273,7 +273,7 @@ test("sticky navigation, hero social icons, and contact drafts work", async ({
   ).toHaveAttribute("aria-pressed", "false");
 });
 
-test("3D keyboard follows scroll, supports real input, and plays optional sounds", async ({
+test("3D keyboard follows scroll, rotates on drag, and plays key sounds", async ({
   page,
 }) => {
   test.setTimeout(60000);
@@ -322,19 +322,25 @@ test("3D keyboard follows scroll, supports real input, and plays optional sounds
       ),
     )
     .toBeGreaterThan(0);
-  await page.getByRole("button", { name: "Mute keyboard sounds" }).click();
   await expect(
-    page.getByRole("button", { name: "Enable keyboard sounds" }),
-  ).toHaveAttribute("aria-pressed", "false");
-  const count = await page.evaluate(
-    () => (window as typeof window & { __keySounds: number }).__keySounds,
+    page.getByRole("button", { name: /keyboard sounds/ }),
+  ).toHaveCount(0);
+  const anchor = await page.locator(".stack-scene-anchor").boundingBox();
+  const initial = await react.boundingBox();
+  await page.mouse.move(anchor!.x + 25, anchor!.y + anchor!.height * 0.5);
+  await page.mouse.down();
+  await page.mouse.move(
+    anchor!.x + 190,
+    anchor!.y + anchor!.height * 0.5 + 40,
+    { steps: 10 },
   );
-  await page.keyboard.press("p");
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+  const rotated = await react.boundingBox();
   expect(
-    await page.evaluate(
-      () => (window as typeof window & { __keySounds: number }).__keySounds,
-    ),
-  ).toBe(count);
+    Math.abs(rotated!.x - initial!.x) + Math.abs(rotated!.y - initial!.y),
+  ).toBeGreaterThan(25);
+  await page.getByRole("button", { name: "Reset keyboard rotation" }).click();
   await page
     .getByRole("navigation")
     .getByRole("link", { name: "Work", exact: true })
@@ -343,4 +349,90 @@ test("3D keyboard follows scroll, supports real input, and plays optional sounds
     "data-phase",
     "work",
   );
+  await page.waitForTimeout(1000);
+  const contactEdge = await page
+    .locator("#contact")
+    .evaluate((el) => el.getBoundingClientRect().top + scrollY - innerHeight);
+  await page.evaluate(
+    (y) => window.scrollTo({ top: y, behavior: "instant" }),
+    contactEdge - 4,
+  );
+  await page.waitForTimeout(150);
+  const beforeContact = await page.locator('[data-tool="react"]').boundingBox();
+  await page.evaluate(
+    (y) => window.scrollTo({ top: y, behavior: "instant" }),
+    contactEdge + 4,
+  );
+  await page.waitForTimeout(150);
+  const enteringContact = await page
+    .locator('[data-tool="react"]')
+    .boundingBox();
+  expect(Math.abs(beforeContact!.width - enteringContact!.width)).toBeLessThan(
+    10,
+  );
+  expect(
+    Math.abs(beforeContact!.x - enteringContact!.x) +
+      Math.abs(beforeContact!.y - enteringContact!.y),
+  ).toBeLessThan(100);
+});
+
+test("expanded stack and social icon rows expose the requested accounts", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const name of [
+    "JavaScript",
+    "React Router",
+    "Axios",
+    "Postman",
+    "Material UI",
+    "Bootstrap",
+  ])
+    await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
+  for (const area of [".hero-socials", ".contact-socials"]) {
+    const socials = page.locator(area);
+    await expect(socials.getByRole("link")).toHaveCount(4);
+    await expect(
+      socials.getByRole("link", { name: "Dorsa on Telegram" }),
+    ).toHaveAttribute("href", "https://t.me/dorrsakhaili");
+    await expect(
+      socials.getByRole("link", { name: "Dorsa on Gmail" }),
+    ).toHaveAttribute("href", /mail.google.com/);
+    await expect(socials.locator("svg")).toHaveCount(4);
+  }
+  await expect(page.locator(".hero-actions")).toHaveCount(0);
+  await expect(page.locator("footer")).not.toContainText("Naresh");
+});
+
+test("contact form opens Gmail with recipient, topic and complete visitor message", async ({
+  page,
+  context,
+}) => {
+  await context.route("https://mail.google.com/**", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "text/html",
+      body: "<title>Compose URL verification</title>",
+    }),
+  );
+  await page.goto("/");
+  await page.getByLabel("Your name", { exact: true }).fill("Visitor & Co");
+  await page
+    .getByLabel("Your email", { exact: true })
+    .fill("visitor@example.com");
+  await page.getByRole("radio", { name: "An opportunity" }).check();
+  const message = "A React project & a few ideas.\nCould we discuss it?";
+  await page.getByLabel("Your message", { exact: true }).fill(message);
+  const opened = context.waitForEvent("page");
+  await page.getByRole("button", { name: "Open Gmail", exact: true }).click();
+  const gmail = await opened;
+  await gmail.waitForLoadState();
+  const url = new URL(gmail.url());
+  expect(url.origin).toBe("https://mail.google.com");
+  expect(url.searchParams.get("view")).toBe("cm");
+  expect(url.searchParams.get("to")).toBe("dorrsakhalili@gmail.com");
+  expect(url.searchParams.get("su")).toBe("An opportunity — Visitor & Co");
+  expect(url.searchParams.get("body")).toContain(message);
+  expect(url.searchParams.get("body")).toContain("visitor@example.com");
+  await gmail.close();
 });

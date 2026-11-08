@@ -2070,3 +2070,278 @@ footer.shell,
     pointer-events: auto;
   }
 }
+/* Social accounts use the same compact controls in both locations. */
+.social-accounts {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.social-accounts a {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: #b5b5ac;
+  border-radius: 50%;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+.social-accounts a:hover {
+  color: var(--coral);
+  background: #ffffff08;
+  transform: translateY(-3px);
+}
+.hero-socials {
+  margin-top: 26px;
+}
+.contact-socials {
+  margin-top: 16px;
+}
+.keyboard-reset {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 25px;
+}
+.keyboard-reset:hover {
+  color: var(--coral);
+  background: #ffffff08;
+}
+.stack-scene-anchor {
+  position: relative;
+  z-index: 7;
+  cursor: grab;
+  touch-action: pan-y;
+}
+html[data-keyboard-dragging],
+html[data-keyboard-dragging] * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+html[data-keyboard-dragging] .creative-cursor {
+  opacity: 0 !important;
+}
+/* A winding, scroll-drawn career trail replaces the horizontal timeline. */
+.career-trail {
+  position: relative;
+  z-index: 9;
+  display: grid;
+  grid-template-columns: 1fr 1.65fr;
+  gap: 40px;
+  margin-top: 90px;
+  padding: 50px 0 70px;
+}
+.trail-heading {
+  position: sticky;
+  top: 150px;
+  align-self: start;
+}
+.trail-heading h2 {
+  font-size: 58px;
+  letter-spacing: -2.5px;
+  line-height: 1.1;
+  margin: 18px 0;
+}
+.trail-heading h2 > span {
+  color: var(--coral);
+}
+.trail-heading > a {
+  margin-top: 10px;
+}
+.trail-counter {
+  display: block;
+  font: 100px/1 Space;
+  letter-spacing: -7px;
+  color: #ffffff14;
+  margin-top: 60px;
+  transition: color 0.3s;
+}
+.trail-counter small {
+  font-size: 17px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.trail-cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  padding: 20px 0;
+}
+.trail-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: #8a8f7e60;
+  pointer-events: none;
+}
+.trail-card {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  text-align: left;
+  position: relative;
+  width: 74%;
+  min-height: 190px;
+  padding: 25px 27px;
+  border-radius: 12px;
+  border: 1px solid #ffffff13;
+  background: linear-gradient(130deg, #24282a, #1a1e20);
+  box-shadow: 0 12px 25px #0002;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+.trail-card:nth-of-type(even) {
+  align-self: end;
+}
+.trail-card[data-active="true"] {
+  border-color: #efa28e77;
+  box-shadow: 0 15px 45px #0003;
+}
+.trail-card-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 22px;
+}
+.trail-number {
+  font: 24px Space;
+  color: #b5bbae;
+}
+.trail-card[data-active="true"] .trail-number {
+  color: var(--coral);
+}
+.trail-year {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: #adb3a6;
+  margin-left: auto;
+}
+.trail-card-top > svg {
+  color: var(--muted);
+}
+.trail-card > strong {
+  font: 500 25px Space;
+  letter-spacing: -0.7px;
+  margin-bottom: 7px;
+}
+.trail-role {
+  font-size: 12px;
+  color: var(--muted);
+}
+.trail-card .career-context {
+  font: 12px/1.7 Archivo;
+  color: #c5c7bb;
+  padding: 14px 0 0;
+  margin: 0;
+  min-height: 0;
+  display: block;
+  border: 0;
+}
+.trail-pin {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #444c46;
+  border: 2px solid #171a1b;
+}
+.trail-card[data-active="true"] .trail-pin {
+  background: var(--coral);
+  box-shadow: 0 0 0 5px #efa28e12;
+}
+@media (max-width: 1050px) {
+  .career-trail {
+    grid-template-columns: 1fr 1.7fr;
+    gap: 25px;
+  }
+  .trail-heading h2 {
+    font-size: 46px;
+  }
+  .trail-card {
+    width: 85%;
+    padding: 22px;
+  }
+  .trail-card > strong {
+    font-size: 22px;
+  }
+}
+@media (max-width: 720px) {
+  .hero-socials {
+    margin-top: 22px;
+  }
+  .hero-keyboard-anchor {
+    height: 290px;
+  }
+  .career-trail {
+    display: block;
+    margin-top: 45px;
+    padding-top: 30px;
+    padding-bottom: 15px;
+  }
+  .trail-heading {
+    position: relative;
+    top: auto;
+  }
+  .trail-heading h2 {
+    font-size: 40px;
+  }
+  .trail-heading h2 br {
+    display: none;
+  }
+  .trail-heading > a {
+    margin: 0;
+  }
+  .trail-counter {
+    display: none;
+  }
+  .trail-cards {
+    gap: 28px;
+    padding-top: 20px;
+  }
+  .trail-card {
+    width: 88%;
+    min-height: 185px;
+    padding: 23px;
+  }
+  .trail-route {
+    inset: 0 2%;
+    width: 96%;
+  }
+  .trail-card > strong {
+    font-size: 23px;
+  }
+  .contact-socials {
+    display: flex;
+    margin-top: 8px;
+  }
+  .contact {
+    margin-top: 45px;
+  }
+  .keyboard-controls.is-fallback {
+    top: 550px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trail-progress {
+    stroke-dashoffset: 0 !important;
+  }
+}
+.trail-card {
+  min-height: 215px;
+}
+@media (max-width: 720px) {
+  .trail-card {
+    min-height: 215px;
+  }
+}

@@ -1,5 +1,35 @@
 export const tools = [
   [
+    "javascript",
+    "JavaScript",
+    "S",
+    "Interactive behavior, from the browser up.",
+    ["calorie"],
+  ],
+  [
+    "reactrouter",
+    "React Router",
+    "E",
+    "Routes and navigation for React applications.",
+    [],
+  ],
+  ["axios", "Axios", "D", "Clear requests and connected APIs.", ["gamehub"]],
+  ["postman", "Postman", "H", "Exploring and checking API requests.", []],
+  [
+    "materialui",
+    "Material UI",
+    "U",
+    "Accessible React components and interface patterns.",
+    [],
+  ],
+  [
+    "bootstrap",
+    "Bootstrap",
+    "B",
+    "Responsive layouts and familiar components.",
+    ["calorie"],
+  ],
+  [
     "react",
     "React",
     "R",

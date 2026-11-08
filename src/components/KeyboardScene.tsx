@@ -97,6 +97,22 @@ export default function KeyboardScene({
     const pose = { x: 0, y: 0, rx: 0.05, ry: -0.32, rz: -0.15, scale: 1 };
     let pointerX = 0,
       pointerY = 0;
+    const drag = {
+      x: 0,
+      y: 0,
+      startX: 0,
+      startY: 0,
+      baseX: 0,
+      baseY: 0,
+      active: false,
+      moved: false,
+      owner: null as HTMLElement | null,
+      pointerId: -1,
+    };
+    let rotationWeight = 0,
+      contactWeight = 0,
+      suppressClick = false;
+    let clickTimer: ReturnType<typeof setTimeout> | undefined;
     const v = new THREE.Vector3();
     const controls = Array.from(
       document.querySelectorAll<HTMLElement>("[data-scene-key]"),
@@ -116,6 +132,12 @@ export default function KeyboardScene({
       keyboardKeys.forEach((key, i) => {
         const el = controls[i];
         if (!el || !el.closest(".is-3d")) return;
+        const interactive =
+          container.dataset.phase === "hero" ||
+          container.dataset.phase === "stack";
+        el.tabIndex = interactive && key.tool ? 0 : -1;
+        el.style.pointerEvents = interactive ? "auto" : "none";
+        el.setAttribute("aria-hidden", String(!interactive));
         const y = entries[i]?.group.position.y ?? 0.7;
         const a = project(key.x - key.width * 0.43, y + 0.15, key.z - 0.4),
           b = project(key.x + key.width * 0.43, y + 0.15, key.z - 0.4),
@@ -277,17 +299,20 @@ export default function KeyboardScene({
             1,
           )
         : 0;
-      const contactProgress = contact
+      const contactRaw = contact
         ? THREE.MathUtils.clamp(
             (innerHeight - contact.top) / (innerHeight * 0.8),
             0,
             1,
           )
         : 0;
+      const contactProgress = THREE.MathUtils.smoothstep(contactRaw, 0, 1);
+      contactWeight = contactProgress;
+      rotationWeight = progress * (1 - projectProgress);
       const width =
         innerWidth < 721
           ? innerWidth * 0.92
-          : Math.min(innerWidth * 0.69, 1080);
+          : Math.min(innerWidth * 0.77, 1240);
       const heroWidth = hero
         ? hero.width * (innerWidth < 721 ? 0.84 : 1.02)
         : width;
@@ -297,17 +322,17 @@ export default function KeyboardScene({
       pose.x = (x - innerWidth * 0.5) * unit;
       const dy = -(y - innerHeight * 0.5) * unit;
       pose.y = dy;
-      pose.rx = lerp(0.08, -0.18, progress);
+      pose.rx = lerp(0.08, 0.22, progress);
       pose.ry = lerp(-0.35, 0.06, progress);
       pose.rz = lerp(-0.13, 0.03, progress);
       pose.scale = (targetWidth * unit) / 11.55;
-      if (projectProgress > 0 && contactProgress === 0) {
+      if (projectProgress > 0) {
         pose.x = lerp(
           pose.x,
           (innerWidth * 0.86 - innerWidth * 0.5) * unit,
           projectProgress,
         );
-        pose.y = lerp(pose.y, -innerHeight * 0.55 * unit, projectProgress);
+        pose.y = lerp(pose.y, -innerHeight * 0.9 * unit, projectProgress);
         pose.scale *= lerp(1, 0.28, projectProgress);
         pose.ry += projectProgress * 1.8;
         pose.rz -= projectProgress * 0.35;
@@ -328,6 +353,8 @@ export default function KeyboardScene({
         pose.ry = lerp(pose.ry, 0.25, contactProgress);
         pose.rz = lerp(pose.rz, -0.2, contactProgress);
       }
+      pose.rx += drag.y * rotationWeight;
+      pose.ry += drag.x * rotationWeight;
       container.dataset.phase =
         contactProgress > 0.5
           ? "contact"
@@ -359,6 +386,7 @@ export default function KeyboardScene({
         state.current.selected,
         state.current.hovered,
         state.current.pressed,
+        contactWeight,
       ].join(":");
       const settling = entries.some(({ group, index, rest }) => {
         const id = keyboardKeys[index].tool?.id ?? `key-${index}`;
@@ -370,7 +398,7 @@ export default function KeyboardScene({
         signature === previousPose &&
         !settling &&
         now - readyAt > 1200 &&
-        container.dataset.phase !== "contact"
+        contactWeight === 0
       )
         return;
       previousPose = signature;
@@ -387,9 +415,7 @@ export default function KeyboardScene({
         const down =
           state.current.pressed === id || state.current.hovered === id;
         const floating =
-          container.dataset.phase === "contact"
-            ? Math.sin(performance.now() * 0.0015 + index * 0.8) * 0.16
-            : 0;
+          Math.sin(now * 0.0015 + index * 0.8) * 0.12 * contactWeight;
         const reveal = readyAt
           ? Math.pow(
               1 -
@@ -409,7 +435,67 @@ export default function KeyboardScene({
       updateControls();
       renderer.render(scene, camera);
     };
+    const startDrag = (e: PointerEvent) => {
+      if (
+        container.dataset.phase !== "stack" ||
+        e.button !== 0 ||
+        e.pointerType === "touch"
+      )
+        return;
+      const owner = (e.target as Element).closest<HTMLElement>(
+        "[data-scene-key], [data-keyboard-grab]",
+      );
+      if (!owner) return;
+      Object.assign(drag, {
+        active: true,
+        moved: false,
+        startX: e.clientX,
+        startY: e.clientY,
+        baseX: drag.x,
+        baseY: drag.y,
+        owner,
+        pointerId: e.pointerId,
+      });
+      owner.setPointerCapture(e.pointerId);
+    };
+    const endDrag = () => {
+      if (!drag.active) return;
+      drag.active = false;
+      if (drag.owner?.hasPointerCapture(drag.pointerId))
+        drag.owner.releasePointerCapture(drag.pointerId);
+      document.documentElement.removeAttribute("data-keyboard-dragging");
+      if (drag.moved) {
+        suppressClick = true;
+        clickTimer = setTimeout(() => {
+          suppressClick = false;
+        }, 150);
+      }
+    };
+    const cancelClick = (e: MouseEvent) => {
+      if (suppressClick) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    };
+    const resetRotation = () => {
+      drag.x = 0;
+      drag.y = 0;
+    };
     const move = (e: PointerEvent) => {
+      if (drag.active) {
+        const dx = e.clientX - drag.startX,
+          dy = e.clientY - drag.startY;
+        if (Math.hypot(dx, dy) > 6) drag.moved = true;
+        if (drag.moved) {
+          e.preventDefault();
+          document.documentElement.setAttribute(
+            "data-keyboard-dragging",
+            "true",
+          );
+          drag.x = THREE.MathUtils.clamp(drag.baseX + dx * 0.006, -1.2, 1.2);
+          drag.y = THREE.MathUtils.clamp(drag.baseY + dy * 0.004, -0.5, 0.6);
+        }
+      }
       pointerX = e.clientX / innerWidth - 0.5;
       pointerY = e.clientY / innerHeight - 0.5;
     };
@@ -419,7 +505,13 @@ export default function KeyboardScene({
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
     };
-    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointermove", move, { passive: false });
+    window.addEventListener("pointerdown", startDrag, true);
+    window.addEventListener("pointerup", endDrag);
+    window.addEventListener("pointercancel", endDrag);
+    window.addEventListener("blur", endDrag);
+    window.addEventListener("click", cancelClick, true);
+    window.addEventListener("keyboard-reset", resetRotation);
     window.addEventListener("resize", resize);
     render();
     const loss = (event: Event) => {
@@ -431,6 +523,14 @@ export default function KeyboardScene({
       disposed = true;
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", startDrag, true);
+      window.removeEventListener("pointerup", endDrag);
+      window.removeEventListener("pointercancel", endDrag);
+      window.removeEventListener("blur", endDrag);
+      window.removeEventListener("click", cancelClick, true);
+      window.removeEventListener("keyboard-reset", resetRotation);
+      clearTimeout(clickTimer);
+      document.documentElement.removeAttribute("data-keyboard-dragging");
       window.removeEventListener("resize", resize);
       renderer.domElement.removeEventListener("webglcontextlost", loss);
       resources.forEach((r) => r.dispose());

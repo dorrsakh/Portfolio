@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { ArrowUpRight, Check, Copy } from "lucide-react";
+import { gmailCompose } from "../lib/contact";
 export function ContactForm() {
   const form = useRef<HTMLFormElement>(null);
   const [topic, setTopic] = useState("A project"),
@@ -35,7 +36,7 @@ export function ContactForm() {
       setCopied(true);
       setStatus("Draft copied.");
     } catch {
-      setStatus("Please use the email button to open your draft.");
+      setStatus("Please use the Gmail button to open your draft.");
     }
   }
   return (
@@ -56,8 +57,12 @@ export function ContactForm() {
         event.preventDefault();
         if (!validate()) return;
         const text = draft();
-        window.location.href = `mailto:dorrsakhalili@gmail.com?subject=${encodeURIComponent(text.subject)}&body=${encodeURIComponent(text.body)}`;
-        setStatus("Opening your email app with this draft.");
+        window.open(
+          gmailCompose(text.subject, text.body),
+          "_blank",
+          "noopener,noreferrer",
+        );
+        setStatus("Review your draft in Gmail, then send it.");
       }}
     >
       <div className="letter-top">
@@ -126,7 +131,7 @@ export function ContactForm() {
       </label>
       <div className="letter-actions">
         <button type="submit" className="letter-send">
-          Continue in email <ArrowUpRight size={20} />
+          Open Gmail <ArrowUpRight size={20} />
         </button>
         <button
           type="button"

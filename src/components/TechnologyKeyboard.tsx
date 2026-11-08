@@ -7,7 +7,6 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { Volume2, VolumeX } from "lucide-react";
 import { tools } from "../data/workbench";
 import { keyboardKeys } from "../data/keyboard";
 import { useKeyboardSounds } from "./useKeyboardSounds";
@@ -31,15 +30,14 @@ export function TechnologyKeyboard({
   );
   const [ready, setReady] = useState(false),
     [hovered, setHovered] = useState<string | null>(null),
-    [pressed, setPressed] = useState<string | null>(null),
-    [sound, setSound] = useState(true);
+    [pressed, setPressed] = useState<string | null>(null);
   const play = useKeyboardSounds();
   const held = useRef<string | null>(null);
   const current = tools.find((t) => t.id === (hovered ?? selected));
-  const state = useRef({ selected, onSelect, sound, play });
+  const state = useRef({ selected, onSelect, play });
   useEffect(() => {
-    state.current = { selected, onSelect, sound, play };
-  }, [selected, onSelect, sound, play]);
+    state.current = { selected, onSelect, play };
+  }, [selected, onSelect, play]);
   const onReady = useCallback((value: boolean) => setReady(value), []);
   const activate = useCallback((id: string) => {
     if (id === "work" || id === "contact") {
@@ -54,13 +52,13 @@ export function TechnologyKeyboard({
     if (held.current === id) return;
     held.current = id;
     setPressed(id);
-    if (state.current.sound) state.current.play(true);
+    state.current.play(true);
   }, []);
   const release = useCallback(() => {
     if (!held.current) return;
     held.current = null;
     setPressed(null);
-    if (state.current.sound) state.current.play(false);
+    state.current.play(false);
   }, []);
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -199,26 +197,26 @@ export function TechnologyKeyboard({
               My stack<span>.</span>
             </h2>
           </div>
-          <button
-            className="sound-control"
-            aria-label={
-              sound ? "Mute keyboard sounds" : "Enable keyboard sounds"
-            }
-            aria-pressed={sound}
-            onClick={() => setSound(!sound)}
-          >
-            {sound ? <Volume2 size={17} /> : <VolumeX size={17} />}
-            <span>Sound {sound ? "on" : "off"}</span>
-          </button>
+          {live && (
+            <button
+              className="keyboard-reset"
+              aria-label="Reset keyboard rotation"
+              title="Reset rotation"
+              onClick={() => window.dispatchEvent(new Event("keyboard-reset"))}
+            >
+              ↺
+            </button>
+          )}
         </div>
-        <div className="stack-scene-anchor" aria-hidden="true" />
+        <div
+          className="stack-scene-anchor"
+          aria-hidden="true"
+          data-keyboard-grab
+        />
         <div className="keyboard-readout" aria-live="polite">
           <div>
-            <span>{current?.name ?? "Make some noise."}</span>
-            <p>
-              {current?.note ??
-                "Hover, tap, or press a key. Space takes you to the work."}
-            </p>
+            <span>{current?.name ?? "Explore the toolkit."}</span>
+            <p>{current?.note ?? "Drag to rotate. Tap a key to explore."}</p>
           </div>
           {selected && (
             <button className="reset-key" onClick={() => onSelect(null)}>

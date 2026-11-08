@@ -1,25 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Check,
-  Copy,
-  Download,
-  Menu,
-  Github,
-  Linkedin,
-  X,
-} from "lucide-react";
+import { ArrowUpRight, Check, Copy, Download, Menu, X } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SmoothScroll } from "./components/SmoothScroll";
+import { CareerTrail } from "./components/CareerTrail";
+import { SocialAccounts } from "./components/SocialAccounts";
 import { ContactForm } from "./components/ContactForm";
 import { CreativeCursor } from "./components/CreativeCursor";
 import { BackToTop } from "./components/BackToTop";
 import { TechnologyKeyboard } from "./components/TechnologyKeyboard";
 import { WorkCard } from "./components/WorkCard";
 import { ProjectDialog } from "./components/ProjectDialog";
-import { work, tools, career, type Work } from "./data/workbench";
+import { work, tools, type Work } from "./data/workbench";
 gsap.registerPlugin(ScrollTrigger);
 export default function App() {
   const root = useRef<HTMLDivElement>(null);
@@ -28,8 +20,7 @@ export default function App() {
   const [selected, setSelected] = useState<string | null>(null),
     [project, setProject] = useState<Work | null>(null),
     [menu, setMenu] = useState(false),
-    [copied, setCopied] = useState(false),
-    [stop, setStop] = useState(0);
+    [copied, setCopied] = useState(false);
   const tool = tools.find((t) => t.id === selected);
   useEffect(() => {
     const mm = gsap.matchMedia();
@@ -168,29 +159,7 @@ export default function App() {
                 Thoughtful interfaces.
                 <br />A little play.
               </p>
-              <div className="hero-actions">
-                <a className="primary-link" href="#work">
-                  Selected work <ArrowDownRight size={18} />
-                </a>
-              </div>
-              <div className="hero-socials" aria-label="Social accounts">
-                <a
-                  href="https://github.com/dorrsakh"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Dorsa on GitHub"
-                >
-                  <Github size={20} />
-                </a>
-                <a
-                  href="https://linkedin.com/in/dorsa-khalili"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Dorsa on LinkedIn"
-                >
-                  <Linkedin size={20} />
-                </a>
-              </div>
+              <SocialAccounts className="hero-socials" />
             </div>
             <div className="hero-keyboard-anchor" aria-hidden="true" />
           </section>
@@ -241,49 +210,7 @@ export default function App() {
               More on GitHub <ArrowUpRight size={16} />
             </a>
           </section>
-          <section
-            className="journey shell"
-            id="experience"
-            aria-labelledby="journey-heading"
-            data-reveal
-          >
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">JOURNEY</p>
-                <h2 id="journey-heading">
-                  Always building<span>.</span>
-                </h2>
-              </div>
-            </div>
-            <div
-              className="career-path"
-              role="group"
-              aria-label="Career journey"
-            >
-              {career.map((c, i) => (
-                <button
-                  key={c.company}
-                  className="career-stop"
-                  aria-pressed={stop === i}
-                  onClick={() => setStop(i)}
-                >
-                  <span className="career-date">{c.date}</span>
-                  <span className="career-node">
-                    <i />
-                  </span>
-                  <strong>{c.company}</strong>
-                  <span>{c.role}</span>
-                </button>
-              ))}
-            </div>
-            <div className="career-context" aria-live="polite">
-              <span>0{stop + 1}</span>
-              <p key={stop}>{career[stop].note}</p>
-              <a className="quiet-link" href="/Dorsa-Khalili-CV.pdf" download>
-                Full résumé <ArrowUpRight size={15} />
-              </a>
-            </div>
-          </section>
+          <CareerTrail />
           <section
             className="contact shell"
             id="contact"
@@ -324,22 +251,7 @@ export default function App() {
                       {copied ? "Email address copied" : ""}
                     </span>
                   </div>
-                  <div className="social-links">
-                    <a
-                      href="https://github.com/dorrsakh"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      GitHub ↗
-                    </a>
-                    <a
-                      href="https://linkedin.com/in/dorsa-khalili"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      LinkedIn ↗
-                    </a>
-                  </div>
+                  <SocialAccounts className="contact-socials" />
                 </div>
               </div>
               <ContactForm />
@@ -348,9 +260,6 @@ export default function App() {
         </main>
         <footer className="shell">
           <span>Dorsa Khalili © {new Date().getFullYear()}</span>
-          <a href="https://nareshkhatri.dev/" target="_blank" rel="noreferrer">
-            Built with Naresh’s keyboard ↗
-          </a>
         </footer>
         <BackToTop />
         <CreativeCursor />

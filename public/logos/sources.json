@@ -84,5 +84,27 @@
     "name": "bootstrap",
     "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/bootstrap/bootstrap-original.svg",
     "bytes": 2075
+  },
+  {
+    "name": "reactrouter",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/reactrouter/reactrouter-original.svg",
+    "bytes": 1285
+  },
+  {
+    "name": "axios",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/axios/axios-plain.svg",
+    "bytes": 344,
+    "adaptation": "Normalized line endings and removed trailing whitespace."
+  },
+  {
+    "name": "postman",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/postman/postman-original.svg",
+    "bytes": 3729
+  },
+  {
+    "name": "materialui",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/materialui/materialui-original.svg",
+    "bytes": 401,
+    "adaptation": "Normalized line endings and removed trailing whitespace."
   }
 ]

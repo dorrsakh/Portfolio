@@ -19,13 +19,14 @@ CHOKIDAR_USEPOLLING=true npm run dev -- --host 0.0.0.0
 
 - Hover or focus a key for a short description; select it to highlight related work without moving cards. Workflow tools have no fabricated project associations.
 - Physical shortcuts are printed on the keys. They only operate while the keyboard is visible, and ignore interactive elements, editing targets, modifiers, and open dialogs.
+- Drag the keyboard with the mouse in the stack section to rotate it; the reset control restores its orientation. The stack framing is enlarged for clearer key logos.
 - Space / Work and Enter / Contact keys navigate to their sections. The keyboard moves from the hero to the stack, rotates aside for work, and returns with floating caps beside contact.
-- Press/release recordings play after a user gesture, with a visible mute control. An animated cursor follows pointer movement and changes over project previews.
-- The header remains sticky, with GitHub and LinkedIn icons also available directly in the hero.
-- A letter-style contact form validates name, email, and message, offers project/opportunity topics, and opens a prepared mailto draft. A copy-draft control provides an alternative. It does not claim automatic delivery or require an email service credential.
+- Press/release recordings play after a user gesture. An animated cursor follows pointer movement and changes over project previews.
+- The header remains sticky, with GitHub, LinkedIn, Gmail, and Telegram icons available in both the hero and contact section.
+- A letter-style contact form validates name, email, and message, offers project/opportunity topics, and opens Gmail in a new tab with the recipient, subject, and message prefilled. A copy-draft control provides an alternative. It does not claim automatic delivery or require an email service credential.
 - Project cards show actual posters and preview muted footage on pointer intent. Offscreen previews pause. Touch and reduced-motion users keep the same controls without hover playback.
 - Native project dialogs provide video controls, captions, Escape dismissal, focus containment, and focus restoration.
-- The compact career path reveals one short context line per role. Full details remain in the supplied résumé.
+- The scroll-drawn career trail follows a winding route between staggered role cards, with selectable context and a sticky chapter counter. Full details remain in the supplied résumé.
 - Pointer lighting, key tilt, smooth scrolling, and GSAP scroll reveals respect reduced motion. Back to top appears after 400px.
 
 ## Verification
