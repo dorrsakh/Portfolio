@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/Naresh-Khatri/3d-portfolio",
+  "commit": "19a1f148edc0fc07efd6c728adc91a649bf5d0d7",
+  "license": "MIT; see THIRD_PARTY_LICENSES/naresh-portfolio-LICENSE.txt",
+  "adaptation": "Original keycap mesh and press/release recordings. Scroll-section pose design and Web Audio hook adapted for this React/Vite portfolio. Staggered keyboard layout, project associations, controls, and scene integration customized for Dorsa.",
+  "files": {
+    "keyboard/keycaps.glb": {
+      "bytes": 204284,
+      "sha256": "0101f5f6f7ac426e0cca9bdbc1c96a752b06b03d9d24d3553209a44b028f3b8e"
+    },
+    "keycap-sounds/press.mp3": {
+      "bytes": 2612,
+      "sha256": "21bd29c5c727b17d3776367b4171e65847ec306b30a316846f756ea3d88a624c"
+    },
+    "keycap-sounds/release.mp3": {
+      "bytes": 2088,
+      "sha256": "cbf79b16855fc3461ca1ff9a9e9a4134bcc09d093f7d98c5f6fdb3a2e0a94fad"
+    }
+  }
+}

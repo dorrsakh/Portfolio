@@ -2,23 +2,78 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <style>
+      #boot-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 1999;
+        display: grid;
+        place-items: center;
+        background: #131517;
+        color: #ece9df;
+        font-family: Arial, sans-serif;
+      }
+      #boot-screen > div {
+        display: flex;
+        gap: 10px;
+        transform: rotate(-7deg);
+      }
+      #boot-screen span {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 68px;
+        background: #e7e4db;
+        color: #343734;
+        border-radius: 8px;
+        box-shadow: 0 7px 0 #777e72;
+        font-size: 24px;
+      }
+      #boot-screen span:last-child {
+        width: 90px;
+        background: #efa28e;
+        box-shadow: 0 7px 0 #956c58;
+      }
+      @media (max-width: 720px) {
+        #boot-screen > div {
+          gap: 7px;
+        }
+        #boot-screen span {
+          width: 44px;
+          height: 50px;
+          font-size: 20px;
+        }
+        #boot-screen span:last-child {
+          width: 57px;
+        }
+      }
+    </style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <meta name="theme-color" content="#101014" />
+    <meta name="theme-color" content="#131517" />
     <meta
       name="description"
       content="Dorsa Khalili — Frontend and Software Engineer building thoughtful, interactive web experiences with React, Next.js, and TypeScript. Explore Dreamaan and selected work."
     />
     <meta
       property="og:title"
-      content="Dorsa Khalili — Good interfaces. A little feeling."
+      content="Dorsa Khalili — Thoughtful interfaces. A little play."
     />
     <meta
       property="og:description"
       content="Frontend / Software Engineer. Explore my work on Dreamaan, creative tools, and thoughtful web experiences."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/social-preview.png" />
+    <meta property="og:url" content="https://dorsakhalili.vercel.app/" />
+    <meta
+      property="og:image:alt"
+      content="Dorsa Khalili — Thoughtful interfaces"
+    />
+    <link rel="canonical" href="https://dorsakhalili.vercel.app/" />
+    <meta
+      property="og:image"
+      content="https://dorsakhalili.vercel.app/social-preview.png"
+    />
     <meta name="twitter:card" content="summary_large_image" />
     <link
       rel="preload"
@@ -30,6 +85,24 @@
     <title>Dorsa Khalili — Frontend / Software Engineer</title>
   </head>
   <body>
+    <div id="boot-screen" aria-hidden="true">
+      <div>
+        <span>D</span><span>O</span><span>R</span><span>S</span><span>A</span
+        ><span>↵</span>
+      </div>
+    </div>
+    <noscript
+      ><style>
+        #boot-screen {
+          display: none;
+        }
+      </style>
+      <p>
+        Dorsa Khalili · Frontend engineer.
+        <a href="/Dorsa-Khalili-CV.pdf">View résumé</a> ·
+        <a href="mailto:dorrsakhalili@gmail.com">Email Dorsa</a>
+      </p></noscript
+    >
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

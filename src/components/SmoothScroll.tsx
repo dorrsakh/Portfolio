@@ -16,7 +16,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       const lenis = new Lenis({
         duration: 0.85,
         smoothWheel: true,
-        anchors: true,
+        anchors: { offset: -100 },
         prevent: (node) => node.hasAttribute("data-lenis-prevent"),
       });
       const frame = (time: number) => lenis.raf(time * 1000);

@@ -1,427 +1,538 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-test("mobile navigation reaches work and closes the menu", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+
+test("technology keys connect to work without removing or shifting cards", async ({
+  page,
+}) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Open menu" }).click();
+  const react = page.getByRole("button", { name: "React", exact: true });
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Dorsa");
+  await expect(
+    page
+      .getByRole("group", { name: "Interactive technology keyboard" })
+      .getByRole("button"),
+  ).toHaveCount(33);
+  const cards = page.locator(".work-card");
+  await expect(cards).toHaveCount(5);
+  await react.click();
+  await expect(react).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".work-filter")).toHaveText(
+    "React → 3 projects highlighted",
+  );
+  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(3);
+  await expect(cards).toHaveCount(5);
+  await page.getByRole("button", { name: "Figma", exact: true }).click();
+  await expect(page.locator(".work-filter")).toHaveText(
+    "Figma · Part of my workflow",
+  );
+  await expect(page.locator(".work-card[data-match]")).toHaveCount(0);
+  await page.getByRole("button", { name: "Reset" }).click();
+  await expect(page.locator(".work-filter")).toHaveText("Selected projects.");
+});
+
+test("physical shortcuts select keys and respect modal and modifier boundaries", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: "React", exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("r");
+  await expect(
+    page.getByRole("button", { name: "React", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Control+n");
+  await expect(
+    page.getByRole("button", { name: "Next.js", exact: true }),
+  ).toHaveAttribute("aria-pressed", "false");
   await page
-    .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("link", { name: "Work", exact: true })
+    .getByRole("button", { name: "Explore Dreamaan", exact: true })
     .click();
-  await expect(page).toHaveURL(/#work$/);
-  await expect(page.getByRole("button", { name: "Open menu" })).toHaveAttribute(
-    "aria-expanded",
-    "false",
-  );
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("n");
+  await expect(
+    page.locator('.scene-key-control[aria-label="Next.js"]'),
+  ).toHaveAttribute("aria-pressed", "false");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Explore Dreamaan", exact: true }),
+  ).toBeFocused();
 });
-test("chapters support keyboard navigation and change the project media", async ({
+
+test("Dreamaan exposes all five real product scenes and restores focus", async ({
   page,
 }) => {
   await page.goto("/");
-  const first = page.getByRole("tab", { name: "Assets", exact: true });
-  await first.focus();
-  await first.press("ArrowRight");
-  await expect(
-    page.getByRole("tab", { name: "Search", exact: true }),
-  ).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText(
-    "One search. A clearer path.",
-  );
-  await expect(page.locator(".project-screen img")).toHaveAttribute(
-    "src",
-    "/media/dreamaan-search.webp",
-  );
-  await page.getByRole("tab", { name: "Search", exact: true }).press("End");
-  await expect(
-    page.getByRole("tab", { name: "References", exact: true }),
-  ).toBeFocused();
-});
-test("case study traps focus, plays real media, and restores focus on Escape", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const trigger = page.getByRole("button", {
-    name: "Open Dreamaan case study",
+  const opener = page.getByRole("button", {
+    name: "Explore Dreamaan",
     exact: true,
   });
-  await trigger.click();
+  await opener.click();
   const dialog = page.getByRole("dialog");
-  await expect(dialog).toBeVisible();
-  await dialog
-    .getByRole("button", { name: "Walkthrough", exact: true })
-    .click();
-  await expect(async () =>
-    expect(
-      await dialog.locator("video").evaluate((el) => el.readyState),
-    ).toBeGreaterThanOrEqual(2),
-  ).toPass({ timeout: 15000 });
-  await dialog.getByRole("button", { name: "Next chapter" }).focus();
-  await page.keyboard.press("Tab");
-  expect(
-    await page.evaluate(
-      () => document.activeElement?.closest("dialog") !== null,
-    ),
-  ).toBe(true);
-  await page.keyboard.press("Escape");
-  await expect(dialog).toHaveCount(0);
-  await expect(trigger).toBeFocused();
-});
-test("layouts fit phone, tablet, desktop, and landscape widths", async ({
-  page,
-}) => {
-  for (const [width, height] of [
-    [320, 780],
-    [375, 812],
-    [390, 844],
-    [768, 1024],
-    [1024, 768],
-    [1440, 1000],
-    [844, 390],
-  ]) {
-    await page.setViewportSize({ width, height });
-    await page.goto("/");
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-      `overflow at ${width}`,
-    ).toBe(true);
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    expect(
-      await page
-        .locator("[data-reveal]")
-        .evaluateAll((els) =>
-          els.every((el) => getComputedStyle(el).opacity === "1"),
-        ),
-    ).toBe(true);
-  }
-});
-test("all published media and the resume resolve successfully", async ({
-  request,
-}) => {
-  for (const url of [
-    "/Dorsa-Khalili-CV.pdf",
-    "/media/dreamaan-assets.webp",
-    "/media/dreamaan-search.webp",
-    "/media/dreamaan-studio.webp",
-    "/media/dreamaan-references.webp",
-    "/media/dreamaan-picker.webp",
-    "/media/dreamaan-assets-mobile.webp",
-    "/media/dreamaan-art.webp",
-    "/media/dreamaan-walkthrough.webm",
-    "/media/walkthrough.vtt",
-    "/social-preview.png",
-  ]) {
-    const response = await request.get(url);
-    expect(response.ok(), url).toBe(true);
-    expect(response.headers()["content-type"], url).not.toContain("text/html");
-  }
-});
-test("main page and dialog have no serious accessibility violations", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const audit = async () => {
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-      .analyze();
-    expect(
-      results.violations.filter(
-        (v) => v.impact === "critical" || v.impact === "serious",
-      ),
-    ).toEqual([]);
-  };
-  await audit();
-  await page
-    .getByRole("button", { name: "Open Dreamaan case study", exact: true })
-    .click();
-  await audit();
-});
-
-test("technology marquee fills wide screens and supports motion controls", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.setViewportSize({ width: 1878, height: 1000 });
-  await page.goto("/");
-  const strip = page.getByRole("region", { name: "Core technologies" });
-  await strip.scrollIntoViewIfNeeded();
-  await page.mouse.move(0, 0);
-  const track = strip.locator(":scope > div").first();
-  const x = () =>
-    track.evaluate((element) => element.getBoundingClientRect().x);
-  const trackBox = await track.boundingBox(),
-    stripBox = await strip.boundingBox();
-  expect(trackBox!.width).toBeGreaterThanOrEqual(stripBox!.width - 1);
-  const initial = await x();
-  await page.waitForTimeout(350);
-  expect(await x()).toBeLessThan(initial - 1);
-  await page.getByRole("button", { name: "Pause technology marquee" }).click();
-  const paused = await x();
-  await page.waitForTimeout(250);
-  expect(Math.abs((await x()) - paused)).toBeLessThan(0.5);
-  await page.getByRole("button", { name: "Resume technology marquee" }).click();
-  await strip.hover();
-  const hovered = await x();
-  await page.waitForTimeout(250);
-  expect(Math.abs((await x()) - hovered)).toBeLessThan(0.5);
-  await page.mouse.move(0, 0);
-  await strip.focus();
-  const focused = await x();
-  await page.waitForTimeout(250);
-  expect(Math.abs((await x()) - focused)).toBeLessThan(0.5);
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(
-    page.getByRole("button", { name: "Pause technology marquee" }),
-  ).toBeHidden();
-  expect(await strip.locator(".technology-item:visible").count()).toBe(6);
-  const reduced = await x();
-  await page.waitForTimeout(250);
-  expect(Math.abs((await x()) - reduced)).toBeLessThan(0.5);
-});
-
-test("project footage plays and the calorie study updates", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const video = page.getByLabel(
-    "Game Hub walkthrough using an offline catalog",
-  );
-  await expect(video).toHaveAttribute("preload", "none");
-  await expect(video).not.toHaveAttribute("autoplay");
-  await expect(
-    page.getByText("Actual app footage · Offline demo catalog.", {
-      exact: false,
-    }),
-  ).toBeVisible();
-  await video.evaluate((el: HTMLVideoElement) => el.play());
+  const home = dialog.getByLabel("Dreamaan Home walkthrough");
+  await expect(home).toBeVisible();
   await expect
-    .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime))
-    .toBeGreaterThan(0);
-  await expect
-    .poll(() => video.evaluate((el: HTMLVideoElement) => el.duration))
-    .toBeGreaterThan(10);
-  await video.evaluate((el: HTMLVideoElement) => el.pause());
-  const total = page.getByLabel("Preview net calories");
-  await expect(total).toHaveText("1,040");
-  await page.getByRole("button", { name: "Add a snack" }).click();
-  await expect(total).toHaveText("1,190");
-  await page.getByRole("button", { name: "Take a walk" }).click();
-  await expect(total).toHaveText("1,090");
-  await page.getByRole("button", { name: "Reset calorie preview" }).click();
-  await expect(total).toHaveText("1,040");
-});
-test("ambient motion respects reduced motion and sculpture forms are selectable", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/");
-  await page.getByRole("button", { name: "Orb", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Orb", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Loop", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Loop", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  const field = page.locator(".ambient-background");
-  await page.mouse.move(400, 300);
-  const image = () => field.evaluate((el: HTMLCanvasElement) => el.toDataURL());
-  const before = await image();
-  await page.waitForTimeout(300);
-  expect(await image()).not.toBe(before);
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(field).toBeHidden();
-});
-
-test("the visual toolkit filters skills and supports keyboard selection", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const toolkit = page.getByRole("region", { name: /Different tools/ });
-  const nodes = page.getByRole("group", { name: "Explore technologies" });
-  await expect(nodes.getByRole("button")).toHaveCount(12);
-  await nodes.getByRole("button", { name: "TypeScript", exact: true }).focus();
-  await page.keyboard.press("Enter");
-  await expect(
-    page.getByRole("heading", { name: "A little more certainty." }),
-  ).toBeVisible();
-  await expect(
-    nodes.getByRole("button", { name: "TypeScript", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await page
-    .getByRole("group", { name: "Filter technologies" })
-    .getByRole("button", { name: "Refine", exact: true })
-    .click();
-  await expect(nodes.getByRole("button")).toHaveCount(3);
-  await expect(
-    page.getByRole("heading", { name: "Confidence in the details." }),
-  ).toBeVisible();
-  await nodes.getByRole("button", { name: "Playwright", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "Try the whole journey." }),
-  ).toBeVisible();
-  await page
-    .getByRole("group", { name: "Filter technologies" })
-    .getByRole("button", { name: "All", exact: true })
-    .click();
-  await expect(nodes.getByRole("button")).toHaveCount(12);
-  await expect(toolkit).toBeVisible();
-  await page.setViewportSize({ width: 375, height: 812 });
-  await nodes
-    .getByRole("button", { name: "AI assistants", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "Assisted. Still considered." }),
-  ).toBeVisible();
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBeTruthy();
-});
-
-test("career chapters follow scroll, support keyboard jumps, and link to the actual work", async ({
-  page,
-}) => {
-  await page.goto("/#experience");
-  const nav = page.getByRole("navigation", { name: "Career chapters" });
-  await expect(page.locator(".career-chapter")).toHaveCount(4);
-  await nav.getByRole("link", { name: /Pardik/ }).click();
-  await expect(nav.getByRole("link", { name: /Pardik/ })).toHaveAttribute(
-    "aria-current",
-    "step",
-  );
-  await page.locator("#career-bluprint").evaluate((el) =>
-    window.scrollTo({
-      top: scrollY + el.getBoundingClientRect().top - 200,
-      behavior: "instant",
-    }),
-  );
-  await expect(nav.getByRole("link", { name: /Bluprint/ })).toHaveAttribute(
-    "aria-current",
-    "step",
-  );
-  await nav.getByRole("link", { name: /Dash Team/ }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/#career-dash$/);
-  await expect(nav.getByRole("link", { name: /Dash Team/ })).toHaveAttribute(
-    "aria-current",
-    "step",
-  );
-  await page.setViewportSize({ width: 375, height: 812 });
-  await nav.getByRole("link", { name: /Rastaar/ }).click();
-  await expect(nav.getByRole("link", { name: /Rastaar/ })).toHaveAttribute(
-    "aria-current",
-    "step",
-  );
+    .poll(() => home.evaluate((v: HTMLVideoElement) => v.readyState))
+    .toBeGreaterThanOrEqual(2);
+  for (const name of ["Project", "Organization", "Studio"]) {
+    await dialog.getByRole("button", { name, exact: true }).click();
+    await expect(
+      dialog.getByLabel(`Dreamaan ${name} walkthrough`),
+    ).toBeVisible();
+  }
+  await dialog.getByRole("button", { name: "Login", exact: true }).click();
+  const image = dialog.getByRole("img");
   await expect
     .poll(() =>
-      page
-        .locator("#career-rastaar")
-        .evaluate((el) => el.getBoundingClientRect().top),
-    )
-    .toBeGreaterThan(140);
-  const explore = page
-    .locator("#experience")
-    .getByRole("button", { name: /Explore Dreamaan/ });
-  await explore.click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(explore).toBeFocused();
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBeTruthy();
-});
-
-test("project cards align and back-to-top is available while scrolling", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const top = page.getByRole("button", { name: "Back to top", exact: true });
-  await expect(top).toBeHidden();
-  await expect(
-    page.getByRole("button", { name: /ambient motion/ }),
-  ).toHaveCount(0);
-  await page.locator(".other-work").scrollIntoViewIfNeeded();
-  const rows = await page
-    .locator(".small-project")
-    .evaluateAll((cards) =>
-      cards.map((card) => [
-        card.firstElementChild!.getBoundingClientRect().bottom,
-        card.querySelector("h3")!.getBoundingClientRect().top,
-        card.querySelector(".small-project-info > p")!.getBoundingClientRect()
-          .top,
-        card.querySelector(".tech-tags")!.getBoundingClientRect().top,
-      ]),
-    );
-  rows[0].forEach((value, i) =>
-    expect(Math.abs(value - rows[1][i])).toBeLessThan(2),
-  );
-  await expect(top).toBeVisible();
-  await top.click();
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2);
-  await expect(page.locator("#home")).toBeFocused();
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.locator("#experience").scrollIntoViewIfNeeded();
-  await top.click();
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2);
-  await expect(top).toBeHidden();
-});
-
-test("Dreamaan product tour shows the login and plays each actual capture", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await page
-    .getByRole("button", { name: "Open Dreamaan case study", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog");
-  await dialog
-    .getByRole("button", { name: "Walkthrough", exact: true })
-    .click();
-  const selector = dialog.getByRole("group", { name: "Dreamaan product tour" });
-  await selector
-    .getByRole("button", { name: "Login Still", exact: true })
-    .click();
-  const login = dialog.getByAltText(
-    "Dreamaan redesigned login page with an animated media collage and sign-in form",
-  );
-  await expect(login).toBeVisible();
-  await expect
-    .poll(() =>
-      login.evaluate(
+      image.evaluate(
         (el: HTMLImageElement) => el.complete && el.naturalWidth > 0,
       ),
     )
     .toBeTruthy();
-  for (const name of ["Home", "Project", "Organization", "Studio"]) {
-    await selector
-      .getByRole("button", { name: `${name} Film`, exact: true })
+  await dialog.getByRole("button", { name: "Close project" }).click();
+  await expect(opener).toBeFocused();
+});
+
+test("project clips load, captions exist, and media posters are real images", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/");
+  for (const name of [
+    "Game Hub",
+    "Calorie Tracker",
+    "NLP Tools",
+    "RTL Portfolio Study",
+  ]) {
+    await page
+      .getByRole("button", { name: `Explore ${name}`, exact: true })
       .click();
-    const video = dialog.getByLabel(`Dreamaan ${name} walkthrough`);
+    const dialog = page.getByRole("dialog");
+    const media = dialog.locator("video");
     await expect
-      .poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState))
+      .poll(() => media.evaluate((v: HTMLVideoElement) => v.readyState))
       .toBeGreaterThanOrEqual(2);
-    await expect
-      .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime))
-      .toBeGreaterThan(0);
-    expect(
-      await video.evaluate((el: HTMLVideoElement) => el.duration),
-    ).toBeGreaterThan(5);
-    expect(
-      await video.locator("track[kind=captions]").getAttribute("src"),
-    ).toMatch(/\.vtt$/);
+    await expect(media.locator("track")).toHaveCount(1);
+    if (name === "Game Hub")
+      await expect(dialog).toContainText("offline catalog");
+    await dialog.getByRole("button", { name: "Close project" }).click();
   }
+  for (const file of [
+    "calorie-walkthrough.vtt",
+    "gamehub-walkthrough.vtt",
+    "dreamaan-home.vtt",
+  ])
+    expect((await request.get(`/media/${file}`)).ok()).toBeTruthy();
+  await expect
+    .poll(() =>
+      page
+        .locator(".work-media>img")
+        .evaluateAll((imgs) =>
+          imgs.every(
+            (img) =>
+              (img as HTMLImageElement).complete &&
+              (img as HTMLImageElement).naturalWidth > 0,
+          ),
+        ),
+    )
+    .toBeTruthy();
+});
+
+test("compact career selection and back to top work with reduced motion", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: /Pardik Smart Home/ }).click();
+  await expect(page.locator(".career-context")).toContainText("React, Next.js");
+  await page.locator("#contact").scrollIntoViewIfNeeded();
+  const top = page.getByRole("button", { name: "Back to top", exact: true });
+  await expect(top).toBeVisible();
+  await top.click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+  await expect(page.locator("#home")).toBeFocused();
+});
+
+test("mobile navigation, aligned cards, and all viewport sizes avoid overflow", async ({
+  page,
+}) => {
+  for (const width of [320, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      )
+      .toBeTruthy();
+    if (width === 390) {
+      await page.getByRole("button", { name: "Open menu" }).click();
+      await page
+        .getByRole("navigation")
+        .getByRole("link", { name: "Work", exact: true })
+        .click();
+      await expect(
+        page.getByRole("button", { name: "Open menu" }),
+      ).toBeVisible();
+    }
+  }
+  const media = await page
+    .locator(".work-card:not(.featured) .work-media")
+    .evaluateAll((els) => els.map((el) => el.getBoundingClientRect()));
+  expect(Math.abs(media[0].top - media[1].top)).toBeLessThan(1);
+  expect(Math.abs(media[0].height - media[1].height)).toBeLessThan(1);
+});
+
+test("native keyboard controls and project modal pass accessibility checks", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect(page.locator(".opening-loader")).toHaveCount(0);
+  const scan = () =>
+    new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+  expect((await scan()).violations).toEqual([]);
+  await page
+    .getByRole("button", { name: "Explore Dreamaan", exact: true })
+    .click();
+  expect((await scan()).violations).toEqual([]);
+});
+
+test("motion mode retains functional keys and plays previews only on intent", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.waitForTimeout(1200);
+  const key = page.getByRole("button", { name: "React", exact: true });
+  await key.hover();
+  await expect(page.locator(".keyboard-readout")).toContainText(
+    "Interfaces for creative workflows",
+  );
+  await key.click();
+  await expect(key).toHaveAttribute("aria-pressed", "true");
+  const preview = page.getByRole("button", {
+    name: "Explore Game Hub",
+    exact: true,
+  });
+  await preview.hover();
+  const video = preview.locator("video");
+  await expect
+    .poll(() =>
+      video.evaluate((v: HTMLVideoElement) => !v.paused && v.readyState >= 2),
+    )
+    .toBeTruthy();
+  await page.mouse.move(0, 0);
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBeTruthy();
+});
+
+test("sticky navigation, hero social icons, and contact drafts work", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
   await expect(
-    dialog.getByText(/Generation wait shortened; failed generations hidden/),
-  ).toBeVisible();
-  await page.setViewportSize({ width: 390, height: 844 });
+    page
+      .locator(".hero-socials")
+      .getByRole("link", { name: "Dorsa on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh");
+  await expect(
+    page
+      .locator(".hero-socials")
+      .getByRole("link", { name: "Dorsa on LinkedIn" }),
+  ).toHaveAttribute("href", "https://linkedin.com/in/dorsa-khalili");
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Contact", exact: true })
+    .click();
+  await expect
+    .poll(() =>
+      page
+        .locator(".site-header")
+        .evaluate((el) => el.getBoundingClientRect().top),
+    )
+    .toBe(0);
+  const form = page.locator(".contact-letter");
+  await form.getByRole("button", { name: "Open Gmail" }).click();
+  await expect(page.getByLabel("Your name", { exact: true })).toBeFocused();
+  await page.getByLabel("Your name", { exact: true }).fill("Portfolio Visitor");
+  await page.getByRole("radio", { name: "An opportunity" }).check();
+  await page
+    .getByLabel("Your message", { exact: true })
+    .fill("I would love to discuss a frontend project.");
+  await form.getByRole("button", { name: "Copy email draft" }).click();
+  await expect(form.getByRole("status")).toHaveText("Draft copied.");
+  const draft = await page.evaluate(() => navigator.clipboard.readText());
+  expect(draft).toContain("To: dorrsakhalili@gmail.com");
+  expect(draft).toContain("An opportunity — Portfolio Visitor");
+  await expect(page.getByLabel("Your email", { exact: true })).toHaveCount(0);
+  expect(draft).toContain("frontend project");
+  await expect(
+    page.getByRole("button", { name: "React", exact: true }),
+  ).toHaveAttribute("aria-pressed", "false");
+});
+
+test("3D keyboard follows scroll, rotates on drag, and plays key sounds", async ({
+  page,
+}) => {
+  test.setTimeout(60000);
+  await page.addInitScript(() => {
+    const w = window as typeof window & { __keySounds: number };
+    w.__keySounds = 0;
+    const original = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function (
+      ...args: Parameters<typeof original>
+    ) {
+      w.__keySounds++;
+      return original.apply(this, args);
+    };
+  });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await expect(page.locator(".keyboard-controls")).toHaveClass(/is-3d/, {
+    timeout: 20000,
+  });
+  await expect(page.locator(".keyboard-webgl")).toHaveAttribute(
+    "data-phase",
+    "hero",
+  );
+  const react = page.getByRole("button", { name: "React", exact: true });
+  const before = await react.boundingBox();
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Stack", exact: true })
+    .click();
+  await expect(page.locator(".keyboard-webgl")).toHaveAttribute(
+    "data-phase",
+    "stack",
+  );
+  await page.waitForTimeout(1000);
+  const after = await react.boundingBox();
+  expect(Math.abs(before!.x - after!.x)).toBeGreaterThan(30);
+  await react.hover();
+  await expect(react).toHaveAttribute("data-pressed", "true");
+  await page.keyboard.press("r");
+  await expect(react).toHaveAttribute("aria-pressed", "true");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as typeof window & { __keySounds: number }).__keySounds,
+      ),
+    )
+    .toBeGreaterThan(0);
+  await expect(
+    page.getByRole("button", { name: /keyboard sounds/ }),
+  ).toHaveCount(0);
+  const anchor = await page.locator(".stack-scene-anchor").boundingBox();
+  const initial = await react.boundingBox();
+  await page.mouse.move(anchor!.x + 25, anchor!.y + anchor!.height * 0.5);
+  await page.mouse.down();
+  await page.mouse.move(
+    anchor!.x + 190,
+    anchor!.y + anchor!.height * 0.5 + 40,
+    { steps: 10 },
+  );
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+  const rotated = await react.boundingBox();
   expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBeTruthy();
+    Math.abs(rotated!.x - initial!.x) + Math.abs(rotated!.y - initial!.y),
+  ).toBeGreaterThan(25);
+  await page.getByRole("button", { name: "Reset keyboard rotation" }).click();
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Work", exact: true })
+    .click();
+  await expect(page.locator(".keyboard-webgl")).toHaveAttribute(
+    "data-phase",
+    "work",
+  );
+  await page.waitForTimeout(1000);
+  const contactEdge = await page
+    .locator("#contact")
+    .evaluate((el) => el.getBoundingClientRect().top + scrollY - innerHeight);
+  await page.evaluate(
+    (y) => window.scrollTo({ top: y, behavior: "instant" }),
+    contactEdge - 4,
+  );
+  await page.waitForTimeout(150);
+  const beforeContact = await page.locator('[data-tool="react"]').boundingBox();
+  await page.evaluate(
+    (y) => window.scrollTo({ top: y, behavior: "instant" }),
+    contactEdge + 4,
+  );
+  await page.waitForTimeout(150);
+  const enteringContact = await page
+    .locator('[data-tool="react"]')
+    .boundingBox();
+  expect(Math.abs(beforeContact!.width - enteringContact!.width)).toBeLessThan(
+    10,
+  );
+  expect(
+    Math.abs(beforeContact!.x - enteringContact!.x) +
+      Math.abs(beforeContact!.y - enteringContact!.y),
+  ).toBeLessThan(100);
+});
+
+test("expanded stack and social icon rows expose the requested accounts", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const name of [
+    "JavaScript",
+    "React Router",
+    "Axios",
+    "Postman",
+    "Material UI",
+    "Bootstrap",
+  ])
+    await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
+  for (const area of [".hero-socials", ".contact-socials"]) {
+    const socials = page.locator(area);
+    await expect(socials.getByRole("link")).toHaveCount(4);
+    await expect(
+      socials.getByRole("link", { name: "Dorsa on Telegram" }),
+    ).toHaveAttribute("href", "https://t.me/dorrsakhaili");
+    await expect(
+      socials.getByRole("link", { name: "Dorsa on Gmail" }),
+    ).toHaveAttribute("href", /mail.google.com/);
+    await expect(socials.locator("svg")).toHaveCount(4);
+  }
+  await expect(page.locator(".hero-actions")).toHaveCount(0);
+  await expect(page.locator("footer")).not.toContainText("Naresh");
+});
+
+test("contact form opens Gmail with recipient, topic and complete visitor message", async ({
+  page,
+  context,
+}) => {
+  await context.route("https://mail.google.com/**", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "text/html",
+      body: "<title>Compose URL verification</title>",
+    }),
+  );
+  await page.goto("/");
+  await page.getByLabel("Your name", { exact: true }).fill("Visitor & Co");
+  await page.getByRole("radio", { name: "An opportunity" }).check();
+  const message = "A React project & a few ideas.\nCould we discuss it?";
+  await page.getByLabel("Your message", { exact: true }).fill(message);
+  const opened = context.waitForEvent("page");
+  await page.getByRole("button", { name: "Open Gmail", exact: true }).click();
+  const gmail = await opened;
+  await gmail.waitForLoadState();
+  const url = new URL(gmail.url());
+  expect(url.origin).toBe("https://mail.google.com");
+  expect(url.searchParams.get("view")).toBe("cm");
+  expect(url.searchParams.get("to")).toBe("dorrsakhalili@gmail.com");
+  expect(url.searchParams.get("su")).toBe("An opportunity — Visitor & Co");
+  expect(url.searchParams.get("body")).toContain(message);
+  expect(url.searchParams.get("body")).toBe(
+    `Hi Dorsa,\n\n${message}\n\nVisitor & Co`,
+  );
+  await gmail.close();
+});
+
+test("opening waits for preparation and supports keyboard entry without trapping the page", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/assets/keyboard/keycaps.glb", async (route) => {
+    await held;
+    await route.abort();
+  });
+  try {
+    await page.goto("/");
+    const loader = page.getByRole("dialog", {
+      name: "Opening Dorsa’s portfolio",
+    });
+    await expect(loader).toBeVisible();
+    await expect(page.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "1",
+    );
+    await expect(page.locator(".site-content")).toHaveAttribute("inert", "");
+    await page.keyboard.press("r");
+    await expect(page.locator('[data-tool="react"]')).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    await page.keyboard.press("Tab");
+    await expect(
+      page.getByRole("link", { name: "Enter Dorsa’s portfolio" }),
+    ).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(
+      page.getByRole("button", { name: "Enter portfolio" }),
+    ).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(loader).toHaveCount(0, { timeout: 3000 });
+    await expect(page.locator(".site-content")).not.toHaveAttribute(
+      "inert",
+      "",
+    );
+    await expect(page.locator("#home")).toBeFocused();
+    expect(await page.evaluate(() => document.body.style.overflow)).not.toBe(
+      "hidden",
+    );
+  } finally {
+    release();
+  }
+});
+
+test("opening has a deadline when the 3D download stalls", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/assets/keyboard/keycaps.glb", async (route) => {
+    await held;
+    await route.abort();
+  });
+  try {
+    await page.goto("/");
+    await expect(page.locator(".opening-loader")).toBeVisible();
+    await expect(page.locator(".opening-loader")).toHaveCount(0, {
+      timeout: 9000,
+    });
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.locator(".keyboard-controls")).toHaveClass(/is-fallback/);
+  } finally {
+    release();
+  }
+});
+
+test("gallery shows the additional actual GitHub work with honest project scope", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".more-work")).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "Explore NLP Tools", exact: true })
+    .click();
+  let dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("no model responses are simulated");
+  await expect(
+    dialog.getByRole("link", { name: "View source" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh/NLP-Project");
+  await dialog.getByRole("button", { name: "Close project" }).click();
+  await page
+    .getByRole("button", { name: "Explore RTL Portfolio Study", exact: true })
+    .click();
+  dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("Course project using template content");
+  await expect(
+    dialog.getByRole("link", { name: "View source" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh/Personal-Website");
 });
