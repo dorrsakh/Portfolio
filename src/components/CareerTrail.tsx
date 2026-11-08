@@ -101,7 +101,6 @@ export function CareerTrail() {
             <span className="trail-card-top">
               <span className="trail-number">0{i + 1}</span>
               <span className="trail-year">{item.date}</span>
-              <ArrowUpRight size={17} />
             </span>
             <strong>{item.company}</strong>
             <span className="trail-role">{item.role}</span>
