@@ -1,5 +1,26 @@
 export const tools = [
   [
+    "python",
+    "Python",
+    "Y",
+    "Programming foundations, scripting, and teaching.",
+    [],
+  ],
+  [
+    "html5",
+    "HTML",
+    "I",
+    "Semantic structure for clear, accessible pages.",
+    ["rtlportfolio"],
+  ],
+  [
+    "css3",
+    "CSS",
+    "K",
+    "Responsive layouts, typography, and interface details.",
+    ["rtlportfolio"],
+  ],
+  [
     "javascript",
     "JavaScript",
     "S",
