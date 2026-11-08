@@ -55,6 +55,11 @@ video:focus-visible {
   outline: 2px solid var(--coral);
   outline-offset: 6px;
 }
+
+/* The hero receives focus after entry and back-to-top for navigation only. */
+#home:focus {
+  outline: none;
+}
 button:disabled {
   cursor: default;
 }
