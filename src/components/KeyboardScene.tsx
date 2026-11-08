@@ -514,6 +514,10 @@ export default function KeyboardScene({
     window.addEventListener("keyboard-reset", resetRotation);
     window.addEventListener("resize", resize);
     render();
+    const revealOnOpen = () => {
+      readyAt = performance.now();
+    };
+    window.addEventListener("portfolio-open", revealOnOpen);
     const loss = (event: Event) => {
       event.preventDefault();
       onReady(false);
@@ -521,6 +525,7 @@ export default function KeyboardScene({
     renderer.domElement.addEventListener("webglcontextlost", loss);
     return () => {
       disposed = true;
+      window.removeEventListener("portfolio-open", revealOnOpen);
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerdown", startDrag, true);

@@ -13,14 +13,14 @@ test("technology keys connect to work without removing or shifting cards", async
       .getByRole("button"),
   ).toHaveCount(33);
   const cards = page.locator(".work-card");
-  await expect(cards).toHaveCount(3);
+  await expect(cards).toHaveCount(5);
   await react.click();
   await expect(react).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".work-filter")).toHaveText(
-    "React → 2 projects highlighted",
+    "React → 3 projects highlighted",
   );
-  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(2);
-  await expect(cards).toHaveCount(3);
+  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(3);
+  await expect(cards).toHaveCount(5);
   await page.getByRole("button", { name: "Figma", exact: true }).click();
   await expect(page.locator(".work-filter")).toHaveText(
     "Figma · Part of my workflow",
@@ -99,7 +99,12 @@ test("project clips load, captions exist, and media posters are real images", as
   request,
 }) => {
   await page.goto("/");
-  for (const name of ["Game Hub", "Calorie Tracker"]) {
+  for (const name of [
+    "Game Hub",
+    "Calorie Tracker",
+    "NLP Tools",
+    "RTL Portfolio Study",
+  ]) {
     await page
       .getByRole("button", { name: `Explore ${name}`, exact: true })
       .click();
@@ -182,6 +187,7 @@ test("native keyboard controls and project modal pass accessibility checks", asy
 }) => {
   await page.goto("/");
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect(page.locator(".opening-loader")).toHaveCount(0);
   const scan = () =>
     new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -435,4 +441,102 @@ test("contact form opens Gmail with recipient, topic and complete visitor messag
   expect(url.searchParams.get("body")).toContain(message);
   expect(url.searchParams.get("body")).toContain("visitor@example.com");
   await gmail.close();
+});
+
+test("opening waits for preparation and supports keyboard entry without trapping the page", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/assets/keyboard/keycaps.glb", async (route) => {
+    await held;
+    await route.abort();
+  });
+  try {
+    await page.goto("/");
+    const loader = page.getByRole("dialog", {
+      name: "Opening Dorsa’s portfolio",
+    });
+    await expect(loader).toBeVisible();
+    await expect(page.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "1",
+    );
+    await expect(page.locator(".site-content")).toHaveAttribute("inert", "");
+    await page.keyboard.press("r");
+    await expect(page.locator('[data-tool="react"]')).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    await page.keyboard.press("Tab");
+    await expect(
+      page.getByRole("link", { name: "Enter Dorsa’s portfolio" }),
+    ).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(
+      page.getByRole("button", { name: "Enter portfolio" }),
+    ).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(loader).toHaveCount(0, { timeout: 3000 });
+    await expect(page.locator(".site-content")).not.toHaveAttribute(
+      "inert",
+      "",
+    );
+    await expect(page.locator("#home")).toBeFocused();
+    expect(await page.evaluate(() => document.body.style.overflow)).not.toBe(
+      "hidden",
+    );
+  } finally {
+    release();
+  }
+});
+
+test("opening has a deadline when the 3D download stalls", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/assets/keyboard/keycaps.glb", async (route) => {
+    await held;
+    await route.abort();
+  });
+  try {
+    await page.goto("/");
+    await expect(page.locator(".opening-loader")).toBeVisible();
+    await expect(page.locator(".opening-loader")).toHaveCount(0, {
+      timeout: 9000,
+    });
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.locator(".keyboard-controls")).toHaveClass(/is-fallback/);
+  } finally {
+    release();
+  }
+});
+
+test("gallery shows the additional actual GitHub work with honest project scope", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".more-work")).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "Explore NLP Tools", exact: true })
+    .click();
+  let dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("no model responses are simulated");
+  await expect(
+    dialog.getByRole("link", { name: "View source" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh/NLP-Project");
+  await dialog.getByRole("button", { name: "Close project" }).click();
+  await page
+    .getByRole("button", { name: "Explore RTL Portfolio Study", exact: true })
+    .click();
+  dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("Course project using template content");
+  await expect(
+    dialog.getByRole("link", { name: "View source" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh/Personal-Website");
 });

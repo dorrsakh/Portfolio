@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-11-08T11:09:46.920Z",
+  "method": "Actual Chromium captures of unmodified public repository source served locally. No generated screens or simulated model outputs.",
+  "projects": [
+    {
+      "id": "nlp",
+      "repository": "https://github.com/dorrsakh/NLP-Project",
+      "commit": "e7d9884975da729dc5bf60e7ca73ca49621d6eb9",
+      "scope": "Frontend UI only. Route navigation and text input are real. The localhost inference service is not included, API actions were not submitted, and no responses were fabricated."
+    },
+    {
+      "id": "rtlportfolio",
+      "repository": "https://github.com/dorrsakh/Personal-Website",
+      "commit": "bda0599bd0550c082c710ef318606e37f5d5a79e",
+      "scope": "Responsive HTML/CSS course study with Persian placeholder content. The template identity, portraits, project examples and experience are not presented as Dorsa\u2019s own biography. A missing optional logo font uses the source\u2019s fallback font."
+    }
+  ],
+  "captureEnvironment": {
+    "emojiFallback": "Noto Color Emoji installed only in the local capture environment; application source and styles were unchanged.",
+    "fontSource": "https://github.com/googlefonts/noto-emoji/blob/main/2D/fonts/NotoColorEmoji.ttf",
+    "fontSha256": "15671215ab769fdc7162a045d56fd7d7e477c51b04e6b3c761d914d8fdd6cc44"
+  }
+}

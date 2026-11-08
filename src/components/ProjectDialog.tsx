@@ -65,7 +65,7 @@ export function ProjectDialog({
             <source src={project.video} type="video/webm" />
             <track
               kind="captions"
-              src={`/media/${project.id === "gamehub" ? "gamehub" : "calorie"}-walkthrough.vtt`}
+              src={`/media/${project.id}-walkthrough.vtt`}
               srcLang="en"
               label="English"
               default

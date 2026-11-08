@@ -106,5 +106,15 @@
     "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/materialui/materialui-original.svg",
     "bytes": 401,
     "adaptation": "Normalized line endings and removed trailing whitespace."
+  },
+  {
+    "name": "html5",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/html5/html5-original.svg",
+    "bytes": 607
+  },
+  {
+    "name": "css3",
+    "source": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/css3/css3-original.svg",
+    "bytes": 778
   }
 ]

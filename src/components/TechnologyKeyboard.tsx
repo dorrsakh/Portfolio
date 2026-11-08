@@ -19,9 +19,11 @@ const subscribe = (cb: () => void) => {
 export function TechnologyKeyboard({
   selected,
   onSelect,
+  onPrepared,
 }: {
   selected: string | null;
   onSelect: (id: string | null) => void;
+  onPrepared?: (value: boolean) => void;
 }) {
   const animate = useSyncExternalStore(
     subscribe,
@@ -38,7 +40,16 @@ export function TechnologyKeyboard({
   useEffect(() => {
     state.current = { selected, onSelect, play };
   }, [selected, onSelect, play]);
-  const onReady = useCallback((value: boolean) => setReady(value), []);
+  const onReady = useCallback(
+    (value: boolean) => {
+      setReady(value);
+      onPrepared?.(true);
+    },
+    [onPrepared],
+  );
+  useEffect(() => {
+    if (!animate) onPrepared?.(true);
+  }, [animate, onPrepared]);
   const activate = useCallback((id: string) => {
     if (id === "work" || id === "contact") {
       document.getElementById(id)?.scrollIntoView({
@@ -69,7 +80,7 @@ export function TechnologyKeyboard({
         e.metaKey ||
         e.altKey ||
         target.closest("input,textarea,select,[contenteditable],dialog") ||
-        document.querySelector("dialog[open]")
+        document.querySelector("dialog[open], .opening-loader")
       )
         return;
       if (target.closest("button,a") && !target.closest("[data-scene-key]"))

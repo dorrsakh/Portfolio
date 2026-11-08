@@ -17,6 +17,8 @@ CHOKIDAR_USEPOLLING=true npm run dev -- --host 0.0.0.0
 
 ## Interaction
 
+- A first-paint keycap strip becomes a short DORSA opening sequence. Its two preparation milestones track fonts and scene/fallback readiness. It supports Enter/Escape, an immediate entry button, reduced motion, and a six-second deadline; hero motion starts after the opening finishes.
+
 - Hover or focus a key for a short description; select it to highlight related work without moving cards. Workflow tools have no fabricated project associations.
 - Physical shortcuts are printed on the keys. They only operate while the keyboard is visible, and ignore interactive elements, editing targets, modifiers, and open dialogs.
 - Drag the keyboard with the mouse in the stack section to rotate it; the reset control restores its orientation. The stack framing is enlarged for clearer key logos.
@@ -49,6 +51,10 @@ All project footage is static media; no Dreamaan credentials or runtime API conn
 - **Dreamaan:** current development preview at `fa24be25`, including redesign work in progress. Login still plus Home, project, organization, and Studio clips. Studio shows one real generation; failed jobs are hidden and the generation wait is shortened. Dorsa’s contribution is identified as part of a team project. See `public/media/dreamaan-tour-provenance.json`; earlier captured stills retain their original provenance.
 - **Game Hub:** original application at `459731aa`. RAWG returned HTTP 522; the user-approved offline catalog uses cached real Steam metadata and artwork in the actual application. This limitation is disclosed in the project dialog. See `public/media/gamehub-provenance.json`.
 - **Calorie Tracker:** unmodified source served locally, with demonstration meal and workout entries entered through the actual UI. The clip shows tracking, persistence after reload, and filtering. See `public/media/calorie-provenance.json`.
+- **NLP Tools:** actual React/TypeScript frontend from `NLP-Project`, showing the sentiment and question-answering routes. The inference service is not included and no model output is simulated.
+- **RTL Portfolio Study:** actual responsive HTML/CSS course project from `Personal-Website`, shown with its original Persian template content. Its sample identity and experience are not Dorsa’s biography.
+
+The two additional captures, source commits, and scope notes are recorded in `public/media/additional-work-provenance.json`. Their original license notices are retained in `THIRD_PARTY_LICENSES/`. Missing-image projects and isolated tutorial snippets were not added to the main gallery.
 
 The keyboard and scroll design are adapted from [Naresh Khatri’s portfolio](https://github.com/Naresh-Khatri/3d-portfolio), cloned at commit `19a1f148`. The original keycap GLB, press/release MP3s, and adapted Web Audio hook retain the MIT notice in `THIRD_PARTY_LICENSES/naresh-portfolio-LICENSE.txt`. `public/assets/keyboard/provenance.json` records sources and checksums. The scene, staggered layout, content, native control projection, and contact form are customized for Dorsa. Brand SVG sources are pinned in `public/logos/sources.json`; their license notices remain in `THIRD_PARTY_LICENSES/`. The previously adapted beUI marquee component and its license remain available in source but are no longer part of the homepage.
 
