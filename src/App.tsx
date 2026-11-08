@@ -6,11 +6,15 @@ import {
   Copy,
   Download,
   Menu,
+  Github,
+  Linkedin,
   X,
 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SmoothScroll } from "./components/SmoothScroll";
+import { ContactForm } from "./components/ContactForm";
+import { CreativeCursor } from "./components/CreativeCursor";
 import { BackToTop } from "./components/BackToTop";
 import { TechnologyKeyboard } from "./components/TechnologyKeyboard";
 import { WorkCard } from "./components/WorkCard";
@@ -40,10 +44,22 @@ export default function App() {
         });
         gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) =>
           gsap.from(el, {
-            y: 45,
-            duration: 0.9,
+            y: 65,
+            opacity: 0,
+            filter: "blur(8px)",
+            duration: 1.1,
             ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 95%", once: true },
+            scrollTrigger: { trigger: el, start: "top 92%", once: true },
+          }),
+        );
+        gsap.utils.toArray<HTMLElement>(".section-heading h2").forEach((el) =>
+          gsap.from(el, {
+            yPercent: 35,
+            opacity: 0,
+            filter: "blur(12px)",
+            duration: 1.1,
+            ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 90%", once: true },
           }),
         );
         gsap.to(".hero-copy", {
@@ -156,17 +172,29 @@ export default function App() {
                 <a className="primary-link" href="#work">
                   Selected work <ArrowDownRight size={18} />
                 </a>
-                <a className="quiet-link" href="/Dorsa-Khalili-CV.pdf" download>
-                  Résumé <Download size={14} />
+              </div>
+              <div className="hero-socials" aria-label="Social accounts">
+                <a
+                  href="https://github.com/dorrsakh"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Dorsa on GitHub"
+                >
+                  <Github size={20} />
+                </a>
+                <a
+                  href="https://linkedin.com/in/dorsa-khalili"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Dorsa on LinkedIn"
+                >
+                  <Linkedin size={20} />
                 </a>
               </div>
-              <div className="hero-note">
-                <span>01 / THE WORKBENCH</span>
-                <span>Built with curiosity.</span>
-              </div>
             </div>
-            <TechnologyKeyboard selected={selected} onSelect={setSelected} />
+            <div className="hero-keyboard-anchor" aria-hidden="true" />
           </section>
+          <TechnologyKeyboard selected={selected} onSelect={setSelected} />
           <section
             className="work-section shell"
             id="work"
@@ -174,7 +202,7 @@ export default function App() {
           >
             <div className="section-heading">
               <div>
-                <p className="eyebrow">01 / SELECTED WORK</p>
+                <p className="eyebrow">WORK</p>
                 <h2 id="work-heading">
                   Made to be used<span>.</span>
                 </h2>
@@ -184,7 +212,7 @@ export default function App() {
                   ? tool.projects.length
                     ? `${tool.name} → ${tool.projects.length} projects highlighted`
                     : `${tool.name} · Part of my workflow`
-                  : "A few things I’ve brought to life."}
+                  : "Selected projects."}
               </p>
             </div>
             <div className="work-grid">
@@ -221,12 +249,11 @@ export default function App() {
           >
             <div className="section-heading">
               <div>
-                <p className="eyebrow">02 / THE JOURNEY</p>
+                <p className="eyebrow">JOURNEY</p>
                 <h2 id="journey-heading">
                   Always building<span>.</span>
                 </h2>
               </div>
-              <p>From teaching code to crafting products.</p>
             </div>
             <div
               className="career-path"
@@ -263,64 +290,70 @@ export default function App() {
             aria-labelledby="contact-heading"
             data-reveal
           >
-            <p className="eyebrow">03 / YOUR NEXT IDEA</p>
-            <div className="contact-row">
-              <h2 id="contact-heading">
-                Let’s make
-                <br />
-                it <em>click.</em>
-              </h2>
-              <a
-                className="contact-arrow"
-                href="mailto:dorrsakhalili@gmail.com"
-                aria-label="Email Dorsa"
-              >
-                <ArrowUpRight />
-              </a>
-            </div>
-            <div className="contact-bottom">
-              <div className="email-line">
-                <a href="mailto:dorrsakhalili@gmail.com">
-                  dorrsakhalili@gmail.com
-                </a>
-                <button
-                  className="icon-button"
-                  aria-label={copied ? "Email copied" : "Copy email address"}
-                  onClick={copy}
-                >
-                  {copied ? <Check size={17} /> : <Copy size={17} />}
-                </button>
-                <span className="sr-only" role="status">
-                  {copied ? "Email address copied" : ""}
-                </span>
+            <p className="eyebrow">SAY HELLO</p>
+            <div className="contact-layout">
+              <div className="contact-intro">
+                <div className="contact-row">
+                  <h2 id="contact-heading">
+                    Let’s make
+                    <br /> it <em>click.</em>
+                  </h2>
+                  <a
+                    className="contact-arrow"
+                    href="mailto:dorrsakhalili@gmail.com"
+                    aria-label="Email Dorsa"
+                  >
+                    <ArrowUpRight />
+                  </a>
+                </div>
+                <div className="contact-bottom">
+                  <div className="email-line">
+                    <a href="mailto:dorrsakhalili@gmail.com">
+                      dorrsakhalili@gmail.com
+                    </a>
+                    <button
+                      className="icon-button"
+                      aria-label={
+                        copied ? "Email copied" : "Copy email address"
+                      }
+                      onClick={copy}
+                    >
+                      {copied ? <Check size={17} /> : <Copy size={17} />}
+                    </button>
+                    <span className="sr-only" role="status">
+                      {copied ? "Email address copied" : ""}
+                    </span>
+                  </div>
+                  <div className="social-links">
+                    <a
+                      href="https://github.com/dorrsakh"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      GitHub ↗
+                    </a>
+                    <a
+                      href="https://linkedin.com/in/dorsa-khalili"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      LinkedIn ↗
+                    </a>
+                  </div>
+                </div>
               </div>
-              <div className="social-links">
-                <a
-                  href="https://github.com/dorrsakh"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  GitHub ↗
-                </a>
-                <a
-                  href="https://linkedin.com/in/dorsa-khalili"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  LinkedIn ↗
-                </a>
-              </div>
+              <ContactForm />
             </div>
           </section>
         </main>
         <footer className="shell">
           <span>Dorsa Khalili © {new Date().getFullYear()}</span>
           <a href="https://nareshkhatri.dev/" target="_blank" rel="noreferrer">
-            Keyboard inspiration ↗
+            Built with Naresh’s keyboard ↗
           </a>
-          <span>Designed to connect.</span>
         </footer>
         <BackToTop />
+        <CreativeCursor />
         {project && (
           <ProjectDialog
             project={project}

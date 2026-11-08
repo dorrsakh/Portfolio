@@ -11,7 +11,7 @@ test("technology keys connect to work without removing or shifting cards", async
     page
       .getByRole("group", { name: "Interactive technology keyboard" })
       .getByRole("button"),
-  ).toHaveCount(16);
+  ).toHaveCount(33);
   const cards = page.locator(".work-card");
   await expect(cards).toHaveCount(3);
   await react.click();
@@ -27,9 +27,7 @@ test("technology keys connect to work without removing or shifting cards", async
   );
   await expect(page.locator(".work-card[data-match]")).toHaveCount(0);
   await page.getByRole("button", { name: "Reset" }).click();
-  await expect(page.locator(".work-filter")).toHaveText(
-    "A few things I’ve brought to life.",
-  );
+  await expect(page.locator(".work-filter")).toHaveText("Selected projects.");
 });
 
 test("physical shortcuts select keys and respect modal and modifier boundaries", async ({
@@ -52,10 +50,9 @@ test("physical shortcuts select keys and respect modal and modifier boundaries",
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("n");
-  await expect(page.locator('.keycap[aria-label="Next.js"]')).toHaveAttribute(
-    "aria-pressed",
-    "false",
-  );
+  await expect(
+    page.locator('.scene-key-control[aria-label="Next.js"]'),
+  ).toHaveAttribute("aria-pressed", "false");
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(
@@ -224,4 +221,126 @@ test("motion mode retains functional keys and plays previews only on intent", as
   await expect
     .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
     .toBeTruthy();
+});
+
+test("sticky navigation, hero social icons, and contact drafts work", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await expect(
+    page
+      .locator(".hero-socials")
+      .getByRole("link", { name: "Dorsa on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh");
+  await expect(
+    page
+      .locator(".hero-socials")
+      .getByRole("link", { name: "Dorsa on LinkedIn" }),
+  ).toHaveAttribute("href", "https://linkedin.com/in/dorsa-khalili");
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Contact", exact: true })
+    .click();
+  await expect
+    .poll(() =>
+      page
+        .locator(".site-header")
+        .evaluate((el) => el.getBoundingClientRect().top),
+    )
+    .toBe(0);
+  const form = page.locator(".contact-letter");
+  await form.getByRole("button", { name: "Continue in email" }).click();
+  await expect(page.getByLabel("Your name", { exact: true })).toBeFocused();
+  await page.getByLabel("Your name", { exact: true }).fill("Portfolio Visitor");
+  await page
+    .getByLabel("Your email", { exact: true })
+    .fill("visitor@example.com");
+  await page.getByRole("radio", { name: "An opportunity" }).check();
+  await page
+    .getByLabel("Your message", { exact: true })
+    .fill("I would love to discuss a frontend project.");
+  await form.getByRole("button", { name: "Copy email draft" }).click();
+  await expect(form.getByRole("status")).toHaveText("Draft copied.");
+  const draft = await page.evaluate(() => navigator.clipboard.readText());
+  expect(draft).toContain("To: dorrsakhalili@gmail.com");
+  expect(draft).toContain("An opportunity — Portfolio Visitor");
+  expect(draft).toContain("visitor@example.com");
+  expect(draft).toContain("frontend project");
+  await expect(
+    page.getByRole("button", { name: "React", exact: true }),
+  ).toHaveAttribute("aria-pressed", "false");
+});
+
+test("3D keyboard follows scroll, supports real input, and plays optional sounds", async ({
+  page,
+}) => {
+  test.setTimeout(60000);
+  await page.addInitScript(() => {
+    const w = window as typeof window & { __keySounds: number };
+    w.__keySounds = 0;
+    const original = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function (
+      ...args: Parameters<typeof original>
+    ) {
+      w.__keySounds++;
+      return original.apply(this, args);
+    };
+  });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await expect(page.locator(".keyboard-controls")).toHaveClass(/is-3d/, {
+    timeout: 20000,
+  });
+  await expect(page.locator(".keyboard-webgl")).toHaveAttribute(
+    "data-phase",
+    "hero",
+  );
+  const react = page.getByRole("button", { name: "React", exact: true });
+  const before = await react.boundingBox();
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Stack", exact: true })
+    .click();
+  await expect(page.locator(".keyboard-webgl")).toHaveAttribute(
+    "data-phase",
+    "stack",
+  );
+  await page.waitForTimeout(1000);
+  const after = await react.boundingBox();
+  expect(Math.abs(before!.x - after!.x)).toBeGreaterThan(30);
+  await react.hover();
+  await expect(react).toHaveAttribute("data-pressed", "true");
+  await page.keyboard.press("r");
+  await expect(react).toHaveAttribute("aria-pressed", "true");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as typeof window & { __keySounds: number }).__keySounds,
+      ),
+    )
+    .toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Mute keyboard sounds" }).click();
+  await expect(
+    page.getByRole("button", { name: "Enable keyboard sounds" }),
+  ).toHaveAttribute("aria-pressed", "false");
+  const count = await page.evaluate(
+    () => (window as typeof window & { __keySounds: number }).__keySounds,
+  );
+  await page.keyboard.press("p");
+  expect(
+    await page.evaluate(
+      () => (window as typeof window & { __keySounds: number }).__keySounds,
+    ),
+  ).toBe(count);
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Work", exact: true })
+    .click();
+  await expect(page.locator(".keyboard-webgl")).toHaveAttribute(
+    "data-phase",
+    "work",
+  );
 });

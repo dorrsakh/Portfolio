@@ -1,6 +1,6 @@
 # Dorsa Khalili — The Workbench
 
-A compact, interactive portfolio built with React, TypeScript, Vite, GSAP, and Lenis. The stack is a custom CSS 3D keyboard with locally served brand logos. All keys are native buttons; pointer, touch, focus, and physical shortcuts share the same selection state. No WebGL download or continuously running canvas is required.
+A compact, interactive portfolio built with React, TypeScript, Vite, GSAP, and Lenis. The stack is a persistent Three.js keyboard with a staggered letter layout, a wide spacebar, and locally served brand logos. The reference keycap model and sounds are reused under MIT. Native projected buttons keep pointer, touch, focus, and physical shortcuts connected to the rendered keys. Reduced motion or unavailable WebGL keeps a static CSS keyboard.
 
 ## Development
 
@@ -19,7 +19,10 @@ CHOKIDAR_USEPOLLING=true npm run dev -- --host 0.0.0.0
 
 - Hover or focus a key for a short description; select it to highlight related work without moving cards. Workflow tools have no fabricated project associations.
 - Physical shortcuts are printed on the keys. They only operate while the keyboard is visible, and ignore interactive elements, editing targets, modifiers, and open dialogs.
-- Work and Contact keys navigate to the relevant sections.
+- Space / Work and Enter / Contact keys navigate to their sections. The keyboard moves from the hero to the stack, rotates aside for work, and returns with floating caps beside contact.
+- Press/release recordings play after a user gesture, with a visible mute control. An animated cursor follows pointer movement and changes over project previews.
+- The header remains sticky, with GitHub and LinkedIn icons also available directly in the hero.
+- A letter-style contact form validates name, email, and message, offers project/opportunity topics, and opens a prepared mailto draft. A copy-draft control provides an alternative. It does not claim automatic delivery or require an email service credential.
 - Project cards show actual posters and preview muted footage on pointer intent. Offscreen previews pause. Touch and reduced-motion users keep the same controls without hover playback.
 - Native project dialogs provide video controls, captions, Escape dismissal, focus containment, and focus restoration.
 - The compact career path reveals one short context line per role. Full details remain in the supplied résumé.
@@ -46,7 +49,7 @@ All project footage is static media; no Dreamaan credentials or runtime API conn
 - **Game Hub:** original application at `459731aa`. RAWG returned HTTP 522; the user-approved offline catalog uses cached real Steam metadata and artwork in the actual application. This limitation is disclosed in the project dialog. See `public/media/gamehub-provenance.json`.
 - **Calorie Tracker:** unmodified source served locally, with demonstration meal and workout entries entered through the actual UI. The clip shows tracking, persistence after reload, and filtering. See `public/media/calorie-provenance.json`.
 
-The keyboard concept was inspired by [Naresh Khatri’s portfolio](https://nareshkhatri.dev/). Its geometry, layout, styling, and interaction implementation here are original CSS/React; no upstream 3D models or code are bundled. Brand SVG sources are pinned in `public/logos/sources.json`; their license notices remain in `THIRD_PARTY_LICENSES/`. The previously adapted beUI marquee component and its license remain available in source but are no longer part of the homepage.
+The keyboard and scroll design are adapted from [Naresh Khatri’s portfolio](https://github.com/Naresh-Khatri/3d-portfolio), cloned at commit `19a1f148`. The original keycap GLB, press/release MP3s, and adapted Web Audio hook retain the MIT notice in `THIRD_PARTY_LICENSES/naresh-portfolio-LICENSE.txt`. `public/assets/keyboard/provenance.json` records sources and checksums. The scene, staggered layout, content, native control projection, and contact form are customized for Dorsa. Brand SVG sources are pinned in `public/logos/sources.json`; their license notices remain in `THIRD_PARTY_LICENSES/`. The previously adapted beUI marquee component and its license remain available in source but are no longer part of the homepage.
 
 ## Deployment
 
