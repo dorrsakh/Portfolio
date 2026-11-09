@@ -13,14 +13,14 @@ test("technology keys connect to work without removing or shifting cards", async
       .getByRole("button"),
   ).toHaveCount(33);
   const cards = page.locator(".work-card");
-  await expect(cards).toHaveCount(5);
+  await expect(cards).toHaveCount(6);
   await react.click();
   await expect(react).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".work-filter")).toHaveText(
-    "React → 3 projects highlighted",
+    "React → 4 projects highlighted",
   );
-  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(3);
-  await expect(cards).toHaveCount(5);
+  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(4);
+  await expect(cards).toHaveCount(6);
   await page.getByRole("button", { name: "Figma", exact: true }).click();
   await expect(page.locator(".work-filter")).toHaveText(
     "Figma · Part of my workflow",
@@ -535,4 +535,46 @@ test("gallery shows the additional actual GitHub work with honest project scope"
   await expect(
     dialog.getByRole("link", { name: "View source" }),
   ).toHaveAttribute("href", "https://github.com/dorrsakh/Personal-Website");
+});
+
+test("Creative Travel Blog appears after Dreamaan with live and source links", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator(".opening-loader").waitFor({ state: "detached" });
+  const titles = await page.locator(".work-card h3").allTextContents();
+  expect(titles.slice(0, 3).map((title) => title.trim())).toEqual([
+    "Dreamaan",
+    "Creative Travel Blog",
+    "Game Hub",
+  ]);
+  const card = page
+    .locator(".work-card")
+    .filter({
+      has: page.getByRole("heading", {
+        name: "Creative Travel Blog",
+        exact: true,
+      }),
+    });
+  await expect(
+    card.getByRole("link", { name: "Visit website" }),
+  ).toHaveAttribute("href", "https://creativetravelblog.vercel.app/");
+  await card
+    .getByRole("button", { name: "Explore Creative Travel Blog", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog");
+  await expect(
+    dialog.getByRole("link", { name: "Visit website" }),
+  ).toHaveAttribute("href", "https://creativetravelblog.vercel.app/");
+  await expect(
+    dialog.getByRole("link", { name: "View source" }),
+  ).toHaveAttribute("href", "https://github.com/dorrsakh/creative-travel-blog");
+  const video = dialog.locator("video");
+  await expect
+    .poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState))
+    .toBeGreaterThanOrEqual(2);
+  await expect(video.locator("track")).toHaveAttribute(
+    "src",
+    "/media/travelblog-walkthrough.vtt",
+  );
 });
