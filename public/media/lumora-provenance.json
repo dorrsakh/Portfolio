@@ -1,0 +1,11 @@
+{
+  "project": "Lumora Studio",
+  "source": "https://github.com/dorrsakh/lumora-studio",
+  "deployment": "https://lumora-studio-pi.vercel.app/",
+  "capturedAt": "2026-11-09T08:06:19.865Z",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "scope": "Actual deployed frontend demo. Dashboard, still-image motion preview, and Flow editor. Generation, credits, and activity are simulated."
+}
