@@ -83,6 +83,16 @@ export function ProjectDialog({
           </div>
           <div>
             <p>{project.note}</p>
+            {project.liveUrl && (
+              <a
+                className="primary-link project-visit"
+                href={project.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Visit website <ArrowUpRight size={16} />
+              </a>
+            )}
             {project.url && (
               <a
                 className="text-link"

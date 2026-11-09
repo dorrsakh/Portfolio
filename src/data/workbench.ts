@@ -62,28 +62,28 @@ export const tools = [
     "React",
     "R",
     "Interfaces for creative workflows and game discovery.",
-    ["dreamaan", "gamehub", "nlp"],
+    ["dreamaan", "travelblog", "gamehub", "nlp"],
   ],
   [
     "nextjs",
     "Next.js",
     "N",
     "Connected routes and product experiences.",
-    ["dreamaan"],
+    ["dreamaan", "travelblog"],
   ],
   [
     "typescript",
     "TypeScript",
     "T",
     "Clear contracts between the interface and API.",
-    ["dreamaan", "gamehub", "nlp"],
+    ["dreamaan", "travelblog", "gamehub", "nlp"],
   ],
   [
     "tailwindcss",
     "Tailwind",
     "W",
     "Responsive layouts. Considered details.",
-    ["dreamaan", "nlp"],
+    ["dreamaan", "travelblog", "nlp"],
   ],
   [
     "zustand",
@@ -149,6 +149,7 @@ export type Work = {
   video?: string;
   stack: string[];
   url?: string;
+  liveUrl?: string;
   points: string[];
   note: string;
 };
@@ -167,6 +168,23 @@ export const work: Work[] = [
       "Debugging and automated browser checks.",
     ],
     note: "Team project · Current redesign, including work in progress.",
+  },
+  {
+    id: "travelblog",
+    name: "Creative Travel Blog",
+    category: "Travel editorial · Figma to code",
+    description: "An illustrated travel journal with room to explore.",
+    poster: "/media/travelblog-poster.webp",
+    video: "/media/travelblog-walkthrough.webm",
+    stack: ["nextjs", "typescript", "tailwindcss"],
+    url: "https://github.com/dorrsakh/creative-travel-blog",
+    liveUrl: "https://creativetravelblog.vercel.app/",
+    points: [
+      "Responsive home, archive, about, and article pages from a Figma design.",
+      "Reusable editorial layouts, local fonts, and optimized photography.",
+      "Motion transitions, hover interactions, and reading progress.",
+    ],
+    note: "Frontend design implementation with demo editorial content.",
   },
   {
     id: "gamehub",

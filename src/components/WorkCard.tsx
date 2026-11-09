@@ -115,6 +115,16 @@ export function WorkCard({
           {!project.stack.length && <span>JS / Bootstrap</span>}
         </div>
       </div>
+      {project.liveUrl && (
+        <a
+          className="text-link work-live-link"
+          href={project.liveUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Visit website <ArrowUpRight size={16} />
+        </a>
+      )}
     </article>
   );
 }

@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/dorrsakh/creative-travel-blog",
+  "sourceCommit": "bacb4a76cb61a0fa54059eb9ce7761d0b51a8fdb",
+  "site": "https://creativetravelblog.vercel.app/",
+  "capturedAt": "2026-11-09T06:54:22.681Z",
+  "method": "Actual Chromium recording of the deployed website: home, featured article, reading scroll, and archive. No UI reconstruction or simulated responses.",
+  "scope": "Frontend-only Figma design implementation. Travel stories and persona are demo editorial content, not Dorsa’s personal travel history.",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "durationSeconds": 11.08,
+  "files": [
+    "travelblog-poster.webp",
+    "travelblog-walkthrough.webm",
+    "travelblog-walkthrough.vtt"
+  ]
+}

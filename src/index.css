@@ -602,6 +602,7 @@ h2 > span {
 }
 .work-meta h3 button {
   padding: 0;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -2551,4 +2552,8 @@ html[data-keyboard-dragging] .creative-cursor {
 }
 .hero-contact-link:hover svg {
   transform: translate(3px, -3px);
+}
+.project-visit {
+  margin-top: 16px;
+  margin-right: 18px;
 }
