@@ -1,0 +1,17 @@
+{
+  "suppliedAt": "2026-11-21",
+  "source": "Owner-supplied Dreamaan preview video",
+  "originalFilename": "dreamaan-preview.gif-20261121-131443-501e5038.mp4",
+  "media": "/media/dreamaan-preview.mp4",
+  "durationSeconds": 10.76,
+  "width": 320,
+  "height": 180,
+  "processing": "Original MP4 copied without re-encoding. Poster extracted from the video at 0.2 seconds.",
+  "scenes": ["Workspace overview", "Studio image gallery", "Credit analytics"],
+  "currentInterfaceReview": {
+    "url": "http://127.0.0.1:7070/",
+    "reviewedAt": "2026-11-21",
+    "scope": "Public landing page and embedded Studio preview. Local source HEAD was 7a87a0d7; this does not establish the recording's source commit."
+  },
+  "earlierTour": "Retained November 7 captures are labeled as earlier versions in the product tour."
+}

@@ -2,12 +2,20 @@ import { useState } from "react";
 
 const scenes = [
   {
+    id: "preview",
+    label: "Overview",
+    title: "The creative workflow, at a glance.",
+    poster: "/media/dreamaan-preview.webp",
+    video: "/media/dreamaan-preview.mp4",
+    note: "A brief look at the workspace, Studio image gallery, and credit analytics.",
+  },
+  {
     id: "login",
     label: "Login",
     title: "A welcoming first impression.",
     poster: "/media/dreamaan-login.webp",
     video: null,
-    note: "The redesigned login page, captured from the current development preview.",
+    note: "The login page from the November 7 development capture.",
   },
   {
     id: "home",
@@ -44,7 +52,7 @@ const scenes = [
 ];
 
 export function DreamaanTour() {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(0);
   const scene = scenes[selected];
   return (
     <div className="dreamaan-tour">
@@ -76,7 +84,10 @@ export function DreamaanTour() {
             aria-label={`Dreamaan ${scene.label} walkthrough`}
             aria-describedby="tour-note"
           >
-            <source src={scene.video} type="video/webm" />
+            <source
+              src={scene.video}
+              type={scene.video.endsWith(".mp4") ? "video/mp4" : "video/webm"}
+            />
             <track
               kind="captions"
               src={`/media/dreamaan-${scene.id}.vtt`}
@@ -99,7 +110,11 @@ export function DreamaanTour() {
       <div className="tour-description">
         <h3>{scene.title}</h3>
         <p id="tour-note">{scene.note}</p>
-        <span>Development preview · Demonstration content</span>
+        <span>
+          {scene.id === "preview"
+            ? "Preview supplied November 21, 2026"
+            : "Earlier capture · November 7, 2026 · Demonstration content"}
+        </span>
       </div>
     </div>
   );

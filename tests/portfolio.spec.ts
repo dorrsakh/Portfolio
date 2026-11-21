@@ -60,7 +60,7 @@ test("physical shortcuts select keys and respect modal and modifier boundaries",
   ).toBeFocused();
 });
 
-test("Dreamaan exposes all five real product scenes and restores focus", async ({
+test("Dreamaan opens the updated preview, keeps earlier scenes, and restores focus", async ({
   page,
 }) => {
   await page.goto("/");
@@ -70,16 +70,29 @@ test("Dreamaan exposes all five real product scenes and restores focus", async (
   });
   await opener.click();
   const dialog = page.getByRole("dialog");
-  const home = dialog.getByLabel("Dreamaan Home walkthrough");
-  await expect(home).toBeVisible();
+  const overview = dialog.getByLabel("Dreamaan Overview walkthrough");
+  await expect(overview).toBeVisible();
+  await expect(overview.locator("source")).toHaveAttribute(
+    "src",
+    "/media/dreamaan-preview.mp4",
+  );
   await expect
-    .poll(() => home.evaluate((v: HTMLVideoElement) => v.readyState))
+    .poll(() => overview.evaluate((v: HTMLVideoElement) => v.readyState))
     .toBeGreaterThanOrEqual(2);
-  for (const name of ["Project", "Organization", "Studio"]) {
+  await overview.evaluate(async (v: HTMLVideoElement) => {
+    v.muted = true;
+    await v.play();
+  });
+  await expect
+    .poll(() => overview.evaluate((v: HTMLVideoElement) => v.currentTime))
+    .toBeGreaterThan(0);
+  await expect(dialog).toContainText("Preview supplied November 21, 2026");
+  for (const name of ["Home", "Project", "Organization", "Studio"]) {
     await dialog.getByRole("button", { name, exact: true }).click();
     await expect(
       dialog.getByLabel(`Dreamaan ${name} walkthrough`),
     ).toBeVisible();
+    await expect(dialog).toContainText("Earlier capture · November 7, 2026");
   }
   await dialog.getByRole("button", { name: "Login", exact: true }).click();
   const image = dialog.getByRole("img");

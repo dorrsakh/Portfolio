@@ -66,7 +66,10 @@ export function WorkCard({
           onPause={() => setPlaying(false)}
           style={{ opacity: playing ? 1 : 0 }}
         >
-          <source src={project.video} type="video/webm" />
+          <source
+            src={project.video}
+            type={project.video?.endsWith(".mp4") ? "video/mp4" : "video/webm"}
+          />
         </video>
         <span className="media-corner">
           <Play size={13} fill="currentColor" /> View project

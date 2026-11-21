@@ -159,8 +159,8 @@ export const work: Work[] = [
     name: "Dreamaan",
     category: "AI creative platform · Rastaar",
     description: "From a first idea to a creative workflow.",
-    poster: "/media/dreamaan-home.webp",
-    video: "/media/dreamaan-home.webm",
+    poster: "/media/dreamaan-preview.webp",
+    video: "/media/dreamaan-preview.mp4",
     stack: ["react", "nextjs", "typescript"],
     points: [
       "Frontend interfaces and responsive UI/UX.",
