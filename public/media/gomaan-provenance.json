@@ -1,0 +1,14 @@
+{
+  "project": "Gomaan",
+  "suppliedAt": "2026-11-21",
+  "source": "Owner-supplied product preview",
+  "originalFilename": "gomaan-preview.gif-20261121-131637-df2115d9.mp4",
+  "media": "/media/gomaan-walkthrough.mp4",
+  "durationSeconds": 10.51,
+  "width": 320,
+  "height": 180,
+  "processing": "Original MP4 copied without re-encoding. Poster extracted at 6 seconds.",
+  "scenes": ["Writing workspace and model controls", "Conversation", "Split-view document preview", "Focused document editor"],
+  "repositoryReview": "Reviewed the private Gomaan product user flows and frontend package manifest. No source code or internal architecture documents are published in the portfolio.",
+  "scope": "Team project at Rastaar. This supplied clip is a product demonstration; no new model requests were made for the portfolio update."
+}
