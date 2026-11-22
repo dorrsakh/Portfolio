@@ -13,14 +13,14 @@ test("technology keys connect to work without removing or shifting cards", async
       .getByRole("button"),
   ).toHaveCount(33);
   const cards = page.locator(".work-card");
-  await expect(cards).toHaveCount(8);
+  await expect(cards).toHaveCount(7);
   await react.click();
   await expect(react).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".work-filter")).toHaveText(
-    "React → 6 projects highlighted",
+    "React → 5 projects highlighted",
   );
-  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(6);
-  await expect(cards).toHaveCount(8);
+  await expect(page.locator('.work-card[data-match="true"]')).toHaveCount(5);
+  await expect(cards).toHaveCount(7);
   await page.getByRole("button", { name: "Figma", exact: true }).click();
   await expect(page.locator(".work-filter")).toHaveText(
     "Figma · Part of my workflow",
@@ -566,9 +566,8 @@ test("Creative Travel Blog follows Lumora Studio with live and source links", as
   await page.goto("/");
   await page.locator(".opening-loader").waitFor({ state: "detached" });
   const titles = await page.locator(".work-card h3").allTextContents();
-  expect(titles.slice(0, 5).map((title) => title.trim())).toEqual([
+  expect(titles.slice(0, 4).map((title) => title.trim())).toEqual([
     "Dreamaan",
-    "Gomaan",
     "Lumora Studio",
     "Creative Travel Blog",
     "Game Hub",
@@ -638,37 +637,3 @@ test("Lumora Studio includes its live demo, source, and actual preview", async (
   );
 });
 
-test("Gomaan previews its supplied clip without exposing a private source link", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await page
-    .getByRole("button", { name: "Explore Gomaan", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog");
-  await expect(
-    dialog.getByRole("heading", { name: "Gomaan", exact: true }),
-  ).toBeVisible();
-  const video = dialog.getByLabel("Gomaan walkthrough");
-  await expect
-    .poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState))
-    .toBeGreaterThanOrEqual(2);
-  await video.evaluate(async (v: HTMLVideoElement) => {
-    v.muted = true;
-    await v.play();
-  });
-  await expect
-    .poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime))
-    .toBeGreaterThan(0);
-  await expect(dialog).toContainText("Source repository is private.");
-  await expect(dialog.getByRole("link", { name: "View source" })).toHaveCount(
-    0,
-  );
-  await expect
-    .poll(() =>
-      video.evaluate(
-        (v: HTMLVideoElement) => v.textTracks[0]?.cues?.length ?? 0,
-      ),
-    )
-    .toBeGreaterThan(0);
-});
