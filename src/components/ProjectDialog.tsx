@@ -62,7 +62,12 @@ export function ProjectDialog({
             poster={project.poster}
             aria-label={`${project.name} walkthrough`}
           >
-            <source src={project.video} type="video/webm" />
+            <source
+              src={project.video}
+              type={
+                project.video?.endsWith(".mp4") ? "video/mp4" : "video/webm"
+              }
+            />
             <track
               kind="captions"
               src={`/media/${project.id}-walkthrough.vtt`}

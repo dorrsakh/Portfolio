@@ -1,10 +1,11 @@
 WEBVTT
 
-00:00.000 --> 00:04.000
-Dreamaan workspace overview with projects, assignments, and credit usage.
+00:00.000 --> 00:04.500
+Workspace overview with projects, assignments, and credits.
 
-00:04.000 --> 00:08.000
-Studio image gallery with creative outputs and prompt controls.
+00:04.500 --> 00:09.500
+Studio image gallery. Failed generations are hidden.
 
-00:08.000 --> 00:10.760
+00:09.500 --> 00:13.500
 Credit analytics with usage charts and generation statistics.
+
