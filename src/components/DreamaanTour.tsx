@@ -112,7 +112,7 @@ export function DreamaanTour() {
         <p id="tour-note">{scene.note}</p>
         <span>
           {scene.id === "preview"
-            ? "Preview supplied November 21, 2026"
+            ? "Local capture · November 22, 2026 · 1080p"
             : "Earlier capture · November 7, 2026 · Demonstration content"}
         </span>
       </div>

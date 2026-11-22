@@ -1,17 +1,27 @@
 {
-  "suppliedAt": "2026-11-21",
-  "source": "Owner-supplied Dreamaan preview video",
-  "originalFilename": "dreamaan-preview.gif-20261121-131443-501e5038.mp4",
+  "capturedAt": "2026-11-22",
+  "source": "Fresh recording of the authenticated local Dreamaan app",
+  "reference": "Owner-supplied November 21 preview: workspace overview, Studio image gallery, and credit analytics",
+  "deployment": "https://7070--main--dev--dorrsakh.cde.rastar.dev/",
   "media": "/media/dreamaan-preview.mp4",
-  "durationSeconds": 10.76,
-  "width": 320,
-  "height": 180,
-  "processing": "Original MP4 copied without re-encoding. Poster extracted from the video at 0.2 seconds.",
-  "scenes": ["Workspace overview", "Studio image gallery", "Credit analytics"],
-  "currentInterfaceReview": {
-    "url": "http://127.0.0.1:7070/",
-    "reviewedAt": "2026-11-21",
-    "scope": "Public landing page and embedded Studio preview. Local source HEAD was 7a87a0d7; this does not establish the recording's source commit."
+  "width": 1920,
+  "height": 1080,
+  "targetDurationSeconds": 13.5,
+  "scenes": [
+    { "name": "Workspace overview", "durationSeconds": 4.5 },
+    { "name": "Studio image gallery", "durationSeconds": 5 },
+    { "name": "Credit analytics", "durationSeconds": 4 }
+  ],
+  "runtime": {
+    "scope": "Current integrated local preview, including preserved unmerged Studio changes; not a clean dev-branch-only deployment.",
+    "frontendRelease": "web-keyframe-help-no-undo-20261121",
+    "manifestRevision": "5615ea082bf4f3e2c6ef7bcec8c480f81c1f1690",
+    "keyframeOverlayRevision": "f993769f20f8cd28d5c389bffeef2b9e34cc3d68"
   },
+  "processing": "Native 1920x1080 browser recording. Loading periods trimmed and three real scenes joined as H.264 MP4, CRF 18, with fast-start metadata. Poster is a full-resolution workspace screenshot; the old 320x180 clip is not upscaled.",
+  "filters": "Images selected and Hide failed enabled through Studio View settings before recording.",
+  "network": "Recorded through the local 7070 proxy. Forwarded media requests were served from that same local proxy to avoid the separate CDE sign-in gateway; real application responses and asset bytes were retained.",
+  "privacy": "Sign-in, credentials, session state, and recording scripts are excluded from published media and repository contents.",
+  "generation": "Existing content only. No generation submitted or credits spent.",
   "earlierTour": "Retained November 7 captures are labeled as earlier versions in the product tour."
 }

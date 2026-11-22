@@ -79,6 +79,14 @@ test("Dreamaan opens the updated preview, keeps earlier scenes, and restores foc
   await expect
     .poll(() => overview.evaluate((v: HTMLVideoElement) => v.readyState))
     .toBeGreaterThanOrEqual(2);
+  await expect
+    .poll(() =>
+      overview.evaluate((v: HTMLVideoElement) => ({
+        width: v.videoWidth,
+        height: v.videoHeight,
+      })),
+    )
+    .toEqual({ width: 1920, height: 1080 });
   await overview.evaluate(async (v: HTMLVideoElement) => {
     v.muted = true;
     await v.play();
@@ -86,7 +94,9 @@ test("Dreamaan opens the updated preview, keeps earlier scenes, and restores foc
   await expect
     .poll(() => overview.evaluate((v: HTMLVideoElement) => v.currentTime))
     .toBeGreaterThan(0);
-  await expect(dialog).toContainText("Preview supplied November 21, 2026");
+  await expect(dialog).toContainText(
+    "Local capture · November 22, 2026 · 1080p",
+  );
   for (const name of ["Home", "Project", "Organization", "Studio"]) {
     await dialog.getByRole("button", { name, exact: true }).click();
     await expect(
